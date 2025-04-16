@@ -36,11 +36,10 @@ public class AIManager : MonoBehaviour
     private const string API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
     private const string API_KEY = "AIzaSyCmmPpM_7x6em730kAqSWdIExZOggZLx2I";
 
-    public void GenerateAICommentary(string arg1, string arg2)
+    public void GenerateAICommentary(string arg1)
     {
-        string prompt = $"Write a poem about {arg1} and {arg2}.";
+        string prompt = $"Write a poem about {arg1}.";
         prompt += " Provide a response of 40 words or less and a title.";
-        prompt += $" Use {arg1} and {arg2} in the title of the poem.";
         StartCoroutine(SendRequestToGemini(prompt));
     }
 
