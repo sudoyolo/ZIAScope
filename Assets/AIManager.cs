@@ -4,6 +4,7 @@ using System.Collections;
 using TMPro;
 using System.Text;
 using System;
+using System.Collections.Generic;
 
 [System.Serializable]
 public class GeminiPart
@@ -32,14 +33,28 @@ public class GeminiResponse
 public class AIManager : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI aiCommentaryText;
+    public SceneHierarchyParser parser;
 
     private const string API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
     private const string API_KEY = "AIzaSyCmmPpM_7x6em730kAqSWdIExZOggZLx2I";
+    private string scene_desc;
+    private Queue<string> past_queries = new Queue<string>();
+    private int maxSize = 10;
+
+    void Start()
+    {
+        parser = FindObjectOfType<SceneHierarchyParser>();
+        scene_desc = parser.result;
+    }
 
     public void GenerateAICommentary(string arg1)
     {
-        string prompt = $"Write a poem about {arg1}.";
-        prompt += " Provide a response of 40 words or less and a title.";
+        Push(arg1);
+        string prompt = $"Given this prompt from a user: {arg1}, check if the user wants to do select an object in the scene. If not, reply \'Nothing\'.";
+        prompt += "If yes, pick the object closest to what they ask for, and return its index and only its index, nothing else. ";
+        prompt += "If multiple objects are selected, return a space separated list of only integers. ";
+        prompt += $"The entire game scene is described here {scene_desc}. ";
+        prompt += $"These are the past 10 prompts the user has used, take account of them only if relevant, prioritize recent queries {ConcatenateQueue(past_queries)}. ";
         StartCoroutine(SendRequestToGemini(prompt));
     }
 
@@ -60,10 +75,10 @@ public class AIManager : MonoBehaviour
             if (request.result == UnityWebRequest.Result.Success)
             {
                 string response = request.downloadHandler.text;
-                Debug.Log("Gemini API Response: " + response);
-
-                string commentary = ExtractCommentaryFromResponse(response);
-                aiCommentaryText.text = commentary;
+                string formatted = ExtractCommentaryFromResponse(response);
+                Debug.Log("Gemini API Response: " + formatted);
+                aiCommentaryText.text = "Selected Object " + formatted;
+                parser.SelectObject(formatted);
             }
             else
             {
@@ -97,5 +112,38 @@ public class AIManager : MonoBehaviour
     private string EscapeJsonString(string str)
     {
         return str.Replace("\\", "\\\\").Replace("\"", "\\\"");
+    }
+
+    public void Push(string item)
+    {
+        if (past_queries.Count >= maxSize)
+        {
+            past_queries.Dequeue(); // remove oldest item
+        }
+        past_queries.Enqueue(item);
+    }
+
+    public string Pop()
+    {
+        if (past_queries.Count == 0)
+        {
+            throw new InvalidOperationException("Queue is empty");
+        }
+        return past_queries.Dequeue();
+    }
+
+    public static string ConcatenateQueue(Queue<string> queue)
+    {
+        if (queue == null || queue.Count == 0)
+            return string.Empty;
+
+        StringBuilder sb = new StringBuilder();
+
+        foreach (string item in queue)
+        {
+            sb.Append(item);
+        }
+
+        return sb.ToString();
     }
 }
