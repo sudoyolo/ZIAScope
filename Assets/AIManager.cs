@@ -34,6 +34,7 @@ public class AIManager : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI aiCommentaryText;
     public SceneHierarchyParser parser;
+    public SceneManipulation sceneMan;
 
     private const string API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
     private const string API_KEY = "AIzaSyCmmPpM_7x6em730kAqSWdIExZOggZLx2I";
@@ -78,7 +79,7 @@ public class AIManager : MonoBehaviour
                 string formatted = ExtractCommentaryFromResponse(response);
                 Debug.Log("Gemini API Response: " + formatted);
                 aiCommentaryText.text = "Selected Object " + formatted;
-                parser.SelectObject(formatted);
+                sceneMan.SelectObject(formatted);
             }
             else
             {

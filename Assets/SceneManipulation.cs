@@ -14,7 +14,10 @@ public class SceneManipulation: MonoBehaviour
     
     void Start()
     {
-
+        // set up indexed scene of all objects in scene
+        foreach (Transform child in sceneObjects.transform){
+            rootChildren.Add(child.gameObject);
+        }
     }
 
     public void SelectObject(string objIdx)
