@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System;
 
-public class SceneManipulation: MonoBehaviour
+public class Selection: MonoBehaviour
 {
     public GameObject sceneObjects;
     public List<GameObject> rootChildren = new List<GameObject>();
