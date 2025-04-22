@@ -1,12 +1,14 @@
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro; // Import TextMeshPro namespace
+using TMPro; 
+using UnityEngine.UI;
+
 
 public class ScrollingStringList : MonoBehaviour
 {
     public Transform contentPanel; // Content panel of the scroll view
     public GameObject stringPrefab; // Prefab for each string entry (e.g., TextMeshProUGUI)
-
+    public ScrollRect scrollRect;
     private Queue<string> stringQueue = new Queue<string>();
     private const int maxStrings = 10;
 
@@ -30,6 +32,7 @@ public class ScrollingStringList : MonoBehaviour
 
         // Update the display
         UpdateDisplay();
+        ScrollToBottom();
     }
 
     private void UpdateDisplay()
@@ -47,5 +50,13 @@ public class ScrollingStringList : MonoBehaviour
             TextMeshProUGUI textComponent = newText.GetComponent<TextMeshProUGUI>(); // Change to TextMeshProUGUI
             textComponent.text = str;
         }
+    }
+
+    public void ScrollToBottom()
+    {
+        // Force the content layout to update before scrolling
+        Canvas.ForceUpdateCanvases();
+        scrollRect.verticalNormalizedPosition = 0f; // 0 = bottom, 1 = top
+        Canvas.ForceUpdateCanvases();
     }
 }

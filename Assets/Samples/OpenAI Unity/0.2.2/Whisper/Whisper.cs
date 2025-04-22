@@ -13,12 +13,12 @@ namespace Samples.Whisper
         [SerializeField] private AIManager aiManager;
         public ScrollingStringList scrollingList;
         private readonly string fileName = "output.wav";
-        private readonly int duration = 5;
+        private readonly int duration = 3;
         
         private AudioClip clip;
         private bool isRecording;
         private float time;
-        private OpenAIApi openai = new OpenAIApi("api-key");
+        private OpenAIApi openai = new OpenAIApi("api_key");
 
         private void Start()
         {

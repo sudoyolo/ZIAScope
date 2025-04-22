@@ -32,7 +32,7 @@ public class GeminiResponse
 
 public class AIManager : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI aiCommentaryText;
+    //[SerializeField] private TextMeshProUGUI aiCommentaryText;
     public SceneHierarchyParser parser;
     public Selection selection;
     public Manipulation manipulation;
@@ -58,17 +58,21 @@ public class AIManager : MonoBehaviour
         prompt += $"The entire game scene is described here {scene_desc}. ";
         prompt += $"These are the past 10 prompts the user has used, take account of them only if relevant, prioritize recent queries {ConcatenateQueue(past_queries)}. ";
         */
+
+        scene_desc = parser.ParseHierarchy();
         string prompt = $"A user gives you this prompt: {arg1}, check if the user wants to do any of the following functions: "; 
-        prompt += "Reply with the relevant function index and its necessary arguments as a comma separated list. The functions are as follows: ";
+        prompt += "Reply with the relevant function index and its necessary arguments as a comma separated list. The functions are as follows:\n";
         prompt += "[0] Selection: User wants to select something. Pick the object closest matching what they ask for, return its index and only its index. ";
         prompt += "If multiple objects are selected, return a space separated list of only integers.\n";
-        prompt += "[1] Change position: User wants to move a previously selected object. Pick a direction closest to: forward/backward/up/down/left/right. Return the direction they ask for as a string.\n";
-        prompt += "[2] Change color or material: User wants to change color or material (eg red, wood, marble, green) of previously selected object. Return the color they say as a string.";
-        prompt += "[3] Assign tag: User wants to apply a tag onto a previously selected object. Return the name of the tag as a string.";
+        prompt += "[1] Change position: User wants to move a previously selected object. Pick a direction closest to: forward/backward/up/down/left/right. Return the direction they ask for as a string. If they ask for a numerical distance return that too, otherwise return 1. Example: \'1 forward 3\'\n";
+        prompt += "[2] Change color: User wants to change color of object (eg red, green, cyan, note that this is different to texture). Return a set of rgb values that matches the color they say, eg. \'cyan\' returns \'75;201;197\'. Do not return name of color only the rgb values.\n";
+        prompt += "[3] Change material: User wants to change the physical material of the object. Return one of the following options closest to what the user says: wood, steel, bronze, floorboards, fabric. If none are close then return \'3 null\'\n";
+        prompt += "[4] Assign tag: User wants to apply a tag onto a previously selected object. Return the name of the tag as a string.\n";
+        prompt += "[5] Create duplicate: user wants to create a new duplicate object of previously selected objects. Return \'empty\' in place of the args, eg. \'5 empty\'.";
         
         prompt += "For all functions except for Selection, if there is an implicit choice of object, eg. \'make chairs red\' then selection should be called before color change.\n";
         prompt += "Example, where chair is scene idx 1: \'Select the chair, change its color to red, move it back\' should return string \'0 1, 2 red, 1 backward\' \n";
-        prompt += "Another example, where two spheres are idx 0 1: \'Move the spheres forward and tag them as new\' should return string \'0 0 1, 1 forward, 3 new\' \n";
+        prompt += "Another example, where two spheres are idx 0 1: \'Move the spheres forward and tag them as new\' should return string \'0 0 1, 1 forward, 4 new\' \n";
         prompt += "Reply \'Nothing\' if no functions apply.";
         prompt += $"The entire game scene is described here {scene_desc}. ";
         prompt += $"These are the past 10 prompts the user has used, take account of them only if relevant, prioritize recent queries {ConcatenateQueue(past_queries)}. ";
@@ -96,14 +100,14 @@ public class AIManager : MonoBehaviour
                 string response = request.downloadHandler.text;
                 string formatted = ExtractCommentaryFromResponse(response);
                 Debug.Log("Gemini API Response: " + formatted);
-                aiCommentaryText.text = "Gemini Response: " + formatted;
+                //aiCommentaryText.text = "Gemini Response: " + formatted;
                 //selection.SelectObject(formatted);
                 manipulation.parseFunctions(formatted);
             }
             else
             {
                 Debug.LogError("API Error: " + request.error);
-                aiCommentaryText.text = "Error fetching AI commentary.";
+                //aiCommentaryText.text = "Error fetching AI commentary.";
             }
         }
     }
