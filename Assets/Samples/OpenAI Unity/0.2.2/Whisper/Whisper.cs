@@ -11,13 +11,14 @@ namespace Samples.Whisper
         [SerializeField] private Text message;
         [SerializeField] private Dropdown dropdown;
         [SerializeField] private AIManager aiManager;
+        public ScrollingStringList scrollingList;
         private readonly string fileName = "output.wav";
         private readonly int duration = 5;
         
         private AudioClip clip;
         private bool isRecording;
         private float time;
-        private OpenAIApi openai = new OpenAIApi("api_key");
+        private OpenAIApi openai = new OpenAIApi("api-key");
 
         private void Start()
         {
@@ -74,6 +75,7 @@ namespace Samples.Whisper
 
             progressBar.fillAmount = 0;
             message.text = res.Text;
+            scrollingList.AddString(res.Text);
             aiManager.GenerateAICommentary(res.Text);
             recordButton.enabled = true;
         }

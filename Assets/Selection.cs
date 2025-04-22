@@ -38,10 +38,11 @@ public class Selection: MonoBehaviour
             }
         }
 
-        for (int i = 0; i<selectedObjects.Count; i++)
+        /*for (int i = 0; i<selectedObjects.Count; i++)
         {
+            // change this to new appearance change function
             ChangeMaterial(selectedObjects[i], selectedMat);
-        }
+        }*/
 
     }
 
