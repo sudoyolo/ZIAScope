@@ -19,6 +19,8 @@ public class Manipulation : MonoBehaviour
         {
             selection.SelectObject,
             ChangePosition,
+            SetPosition,
+            RotateObj,
             ChangeColor,
             ChangeMaterial,
             AssignTag,
@@ -53,6 +55,11 @@ public class Manipulation : MonoBehaviour
             // Call the function
             if (funcIndex >= 0 && funcIndex < functionList.Count)
             {
+                if(funcIndex!=0 && selection.selectedObjects.Count == 0)
+                {
+                    Debug.Log("No previous selection exists, only manipulation applied.");
+                    return;
+                }
                 functionList[funcIndex].Invoke(arg);
             }
             else
@@ -64,6 +71,25 @@ public class Manipulation : MonoBehaviour
 
     }
 
+    // set position to coordinates
+    public void SetPosition(string input)
+    {
+        string[] values = input.Split(';');
+        if (values.Length != 3)
+        {
+            Debug.LogError("Invalid Vector3 format. Expected format: x,y,z");
+        }
+
+        float x = float.Parse(values[0]);
+        float y = float.Parse(values[1]);
+        float z = float.Parse(values[2]);
+        
+        foreach (GameObject obj in selection.selectedObjects)
+        {
+            obj.transform.localPosition = new Vector3(x, y+1.0f, z);
+        }
+
+    }
 // temporary position change
     public void ChangePosition(string arg)
     {
@@ -109,6 +135,26 @@ public class Manipulation : MonoBehaviour
             obj.transform.position += direction * amount;
         }
     }
+
+    public void RotateObj(string degree)
+    {
+        Debug.Log("object rotation by " + degree);
+
+        if (float.TryParse(degree, out float yRotation))
+        {
+            foreach (GameObject obj in selection.selectedObjects)
+            {
+                Vector3 currentEuler = obj.transform.eulerAngles;
+                obj.transform.rotation = Quaternion.Euler(currentEuler.x, currentEuler.y + yRotation, currentEuler.z);
+            }
+        }
+        else
+        {
+            Debug.LogError("Invalid input. Please provide a single float value.");
+        }
+    }
+
+
 
 // temporary patch for color change, may add texture change
     public void ChangeColor(string rgbString) 
@@ -164,8 +210,20 @@ public class Manipulation : MonoBehaviour
             } 
             else if(arg.Contains("fabric"))
             {
-                rend.material = materialList[3];
+                rend.material = materialList[4];
             } 
+            else if(arg.Contains("ceramic"))
+            {
+                rend.material = materialList[5];
+            } 
+            else if(arg.Contains("untextured"))
+            {
+                rend.material = materialList[6];
+            } 
+            else if(arg.Contains("paintedwall"))
+            {
+                rend.material = materialList[7];
+            }
         } 
     }
 

@@ -62,17 +62,22 @@ public class AIManager : MonoBehaviour
         scene_desc = parser.ParseHierarchy();
         string prompt = $"A user gives you this prompt: {arg1}, check if the user wants to do any of the following functions: "; 
         prompt += "Reply with the relevant function index and its necessary arguments as a comma separated list. The functions are as follows:\n";
-        prompt += "[0] Selection: User wants to select something. Pick the object closest matching what they ask for, return its index and only its index. ";
-        prompt += "If multiple objects are selected, return a space separated list of only integers.\n";
-        prompt += "[1] Change position: User wants to move a previously selected object. Pick a direction closest to: forward/backward/up/down/left/right. Return the direction they ask for as a string. If they ask for a numerical distance return that too, otherwise return 1. Example: \'1 forward 3\'\n";
-        prompt += "[2] Change color: User wants to change color of object (eg red, green, cyan, note that this is different to texture). Return a set of rgb values that matches the color they say, eg. \'cyan\' returns \'75;201;197\'. Do not return name of color only the rgb values.\n";
-        prompt += "[3] Change material: User wants to change the physical material of the object. Return one of the following options closest to what the user says: wood, steel, bronze, floorboards, fabric. If none are close then return \'3 null\'\n";
-        prompt += "[4] Assign tag: User wants to apply a tag onto a previously selected object. Return the name of the tag as a string.\n";
-        prompt += "[5] Create duplicate: user wants to create a new duplicate object of previously selected objects. Return \'empty\' in place of the args, eg. \'5 empty\'.";
         
+        // SELECTION
+        prompt += "[0] Selection: User wants to select something. Pick the object closest matching what they ask for, return its index and only its index. ";
+        prompt += "If multiple objects are selected, return a space separated list of only integers. When users say \'this object\' they typically mean an object close to them, while \'that over there\' means a further distance; take this into account.\n";
+        // ALL MANIPULATION FUNCTIONS
+        prompt += "[1] Change position: User wants to move a previously selected object. Pick a direction closest to: forward/backward/up/down/left/right. Return the direction they ask for as a string. If they ask for a numerical distance return that too, otherwise return 1. Example: \'1 forward 3\'\n";
+        prompt += "[2] Set position: User wants to move one object towards another. Return the target object's coordinate position with three numbers ; separated, e.g. \'Move the cushion to the couch\' should select the cushions first, then return in format \'2 5;4;2\' \n";        
+        prompt += "[3] Rotate object: User wants to rotate an object about the y axis. Return the number they specify, clockwise being positive and anti-clockwise being negative.\n";
+        prompt += "[4] Change color: User wants to change color of object (eg red, green, cyan, note that this is different to texture). Return a set of rgb values that matches the color they say, eg. \'cyan\' returns \'75;201;197\'. Do not return name of color only the rgb values.\n";
+        prompt += "[5] Change material: User wants to change the physical material of the object. Return one of the following options closest to what the user says: wood, steel, bronze, floorboards, fabric, ceramic, untextured, paintedwall. If none are close then return \'3 null\'\n";
+        prompt += "[6] Assign tag: User wants to apply a tag to a previously selected object. Return the name of the tag as a string.\n";
+        prompt += "[7] Create duplicate: user wants to create a new duplicate object of previously selected objects. Return \'empty\' in place of the args, eg. \'5 empty\'.";
+        // TWEAKS
         prompt += "For all functions except for Selection, if there is an implicit choice of object, eg. \'make chairs red\' then selection should be called before color change.\n";
-        prompt += "Example, where chair is scene idx 1: \'Select the chair, change its color to red, move it back\' should return string \'0 1, 2 red, 1 backward\' \n";
-        prompt += "Another example, where two spheres are idx 0 1: \'Move the spheres forward and tag them as new\' should return string \'0 0 1, 1 forward, 4 new\' \n";
+        prompt += "Example, where chair is scene idx 1: \'Select the chair, change its color to red, move it back\' should return string \'0 1, 4 red, 1 backward 1\' \n";
+        prompt += "Another example, where two spheres are idx 0 1: \'Move the spheres forward and tag them as new\' should return string \'0 0 1, 1 forward, 6 new\' \n";
         prompt += "Reply \'Nothing\' if no functions apply.";
         prompt += $"The entire game scene is described here {scene_desc}. ";
         prompt += $"These are the past 10 prompts the user has used, take account of them only if relevant, prioritize recent queries {ConcatenateQueue(past_queries)}. ";

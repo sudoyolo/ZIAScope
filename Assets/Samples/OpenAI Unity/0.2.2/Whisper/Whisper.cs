@@ -8,7 +8,7 @@ namespace Samples.Whisper
     {
         [SerializeField] private Button recordButton;
         [SerializeField] private Image progressBar;
-        [SerializeField] private Text message;
+        //[SerializeField] private Text message;
         [SerializeField] private Dropdown dropdown;
         [SerializeField] private AIManager aiManager;
         public ScrollingStringList scrollingList;
@@ -56,7 +56,7 @@ namespace Samples.Whisper
 
         private async void EndRecording()
         {
-            message.text = "Transcripting...";
+            //message.text = "Transcripting...";
             
             #if !UNITY_WEBGL
             Microphone.End(null);
@@ -74,7 +74,7 @@ namespace Samples.Whisper
             var res = await openai.CreateAudioTranscription(req);
 
             progressBar.fillAmount = 0;
-            message.text = res.Text;
+            //message.text = res.Text;
             scrollingList.AddString(res.Text);
             aiManager.GenerateAICommentary(res.Text);
             recordButton.enabled = true;
