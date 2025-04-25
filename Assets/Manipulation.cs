@@ -10,6 +10,7 @@ public class Manipulation : MonoBehaviour
     List<Action<string>> functionList;
     public Selection selection;
     public List<Material> materialList = new List<Material>();
+    public Wayfinding wayfinding;
 
     // Start is called before the first frame update
     void Start()
@@ -25,6 +26,9 @@ public class Manipulation : MonoBehaviour
             ChangeMaterial,
             AssignTag,
             DuplicateObject,
+            wayfinding.illuminatePathToDestination,
+            wayfinding.illuminatePathBetweenDestinations,
+            wayfinding.clearPaths
         };
     }
 

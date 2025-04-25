@@ -73,11 +73,19 @@ public class AIManager : MonoBehaviour
         prompt += "[4] Change color: User wants to change color of object (eg red, green, cyan, note that this is different to texture). Return a set of rgb values that matches the color they say, eg. \'cyan\' returns \'75;201;197\'. Do not return name of color only the rgb values.\n";
         prompt += "[5] Change material: User wants to change the physical material of the object. Return one of the following options closest to what the user says: wood, steel, bronze, floorboards, fabric, ceramic, untextured, paintedwall. If none are close then return \'3 null\'\n";
         prompt += "[6] Assign tag: User wants to apply a tag to a previously selected object. Return the name of the tag as a string.\n";
-        prompt += "[7] Create duplicate: user wants to create a new duplicate object of previously selected objects. Return \'empty\' in place of the args, eg. \'5 empty\'.";
+        prompt += "[7] Create duplicate: user wants to create a new duplicate object of previously selected objects. Return \'empty\' in place of the args, eg. \'5 empty\'.\n";
+        prompt += "[8] Add Path from user: user wants to illuminate a path to a location object. e.g. \'8 5\'\n";
+        prompt += "[9] Add Path between two objects: user wants to illuminate a path to two location objects e.g. \'9 7 12\'";
         // TWEAKS
         prompt += "For all functions except for Selection, if there is an implicit choice of object, eg. \'make chairs red\' then selection should be called before color change.\n";
         prompt += "Example, where chair is scene idx 1: \'Select the chair, change its color to red, move it back\' should return string \'0 1, 4 red, 1 backward 1\' \n";
         prompt += "Another example, where two spheres are idx 0 1: \'Move the spheres forward and tag them as new\' should return string \'0 0 1, 1 forward, 6 new\' \n";
+        prompt +=
+            "For the function involving paths, call selection on relevant objects prior to calling the Add Path command. \n";
+        prompt +=
+            "An example of this is where the fridge idx is 63: \'Take me to the fridge\' should return \'0 63, 8 63\'\n";
+        prompt +=
+            "Another example of this is where the fridge idx is 63 and the couch idx is 25: \'Show me the shortest route between the couch and the fridge\' should return \'0 63 25, 8 63 25\'\n";
         prompt += "Reply \'Nothing\' if no functions apply.";
         prompt += $"The entire game scene is described here {scene_desc}. ";
         prompt += $"These are the past 10 prompts the user has used, take account of them only if relevant, prioritize recent queries {ConcatenateQueue(past_queries)}. ";
