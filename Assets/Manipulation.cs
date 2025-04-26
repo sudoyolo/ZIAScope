@@ -11,6 +11,7 @@ public class Manipulation : MonoBehaviour
     public Selection selection;
     public List<Material> materialList = new List<Material>();
     public Wayfinding wayfinding;
+    public SceneHierarchyParser parser;
 
     // Start is called before the first frame update
     void Start()
@@ -26,6 +27,7 @@ public class Manipulation : MonoBehaviour
             ChangeMaterial,
             AssignTag,
             DuplicateObject,
+            DeleteObject,
             wayfinding.illuminatePathToDestination,
             wayfinding.illuminatePathBetweenDestinations,
             wayfinding.clearPaths
@@ -40,26 +42,38 @@ public class Manipulation : MonoBehaviour
 
     public void parseFunctions(string command)
     {
-        if(command.Contains("Nothing")){return;}
+        if (command.Contains("Nothing")) { return; }
+
         int i = 0;
         while (i < command.Length)
         {
-            // read first function idx
-            if(command[i]==' '){i++;}
-            int funcIndex = int.Parse(command[i].ToString());
-            i++; // move past the digit
+            // Skip whitespace
+            while (i < command.Length && command[i] == ' ')
+            {
+                i++;
+            }
 
-            // extract argument
+            // Parse full function index (supports multi-digit numbers)
+            int funcStart = i;
+            while (i < command.Length && char.IsDigit(command[i]))
+            {
+                i++;
+            }
+            string funcStr = command.Substring(funcStart, i - funcStart);
+            int funcIndex = int.Parse(funcStr);
+
+            // Parse argument
             int argStart = i;
             while (i < command.Length && command[i] != ',')
             {
                 i++;
             }
             string arg = command.Substring(argStart, i - argStart);
+
             // Call the function
             if (funcIndex >= 0 && funcIndex < functionList.Count)
             {
-                if(funcIndex!=0 && selection.selectedObjects.Count == 0)
+                if (funcIndex != 0 && selection.selectedObjects.Count == 0)
                 {
                     Debug.Log("No previous selection exists, only manipulation applied.");
                     return;
@@ -70,9 +84,9 @@ public class Manipulation : MonoBehaviour
             {
                 Debug.LogError("Invalid function index: " + funcIndex);
             }
-            i++; 
-        }
 
+            i++; // Move past the comma
+        }
     }
 
     // set position to coordinates
@@ -251,14 +265,29 @@ public class Manipulation : MonoBehaviour
 
     public void DuplicateObject(string objname)
     {
+        for (int i = 0; i < selection.selectedObjects.Count; i++)
+        {
+            GameObject original = selection.selectedObjects[i];
+            GameObject duplicate = Instantiate(original);
+            duplicate.transform.SetParent(original.transform.parent, false);
+            duplicate.transform.position = original.transform.position + new Vector3(0.5f, 0.0f, 0.5f);
+            duplicate.name = original.name + "_Copy";
+
+            selection.selectedObjects[i] = duplicate;
+
+            //string buff = parser.ParseHierarchy(); // Still unsure if this needs to be called each loop
+        }
+        string buff = parser.ParseHierarchy();
+    }
+
+
+    public void DeleteObject(string objname)
+    {
+        Debug.Log("Selected objects count: " + selection.selectedObjects.Count);
         foreach(GameObject obj in selection.selectedObjects) {
-            GameObject duplicate = Instantiate(obj);
-            // Set the duplicate's parent to the original object's parent
-            duplicate.transform.SetParent(obj.transform.parent, false);
-            // Apply a small offset to avoid overlap
-            duplicate.transform.position = obj.transform.position + new Vector3(0.5f, 0.0f, 0.5f);
-            // Optional: rename or mark it as a duplicate
-            duplicate.name = obj.name + "_Copy";
+            Destroy(obj);
+            string buff = parser.ParseHierarchy();
+
         }
     }
 }

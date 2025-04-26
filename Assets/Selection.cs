@@ -6,18 +6,19 @@ using System;
 public class Selection: MonoBehaviour
 {
     public GameObject sceneObjects;
-    public List<GameObject> rootChildren = new List<GameObject>();
+    //public List<GameObject> rootChildren = new List<GameObject>();
     [SerializeField] public Transform playerPos; 
     [SerializeField] private Material selectedMat;
+    public SceneHierarchyParser parser;
     public List<GameObject> selectedObjects = new List<GameObject>();
     public string result; 
     
     void Start()
     {
         // set up indexed scene of all objects in scene
-        foreach (Transform child in sceneObjects.transform){
+        /*foreach (Transform child in sceneObjects.transform){
             rootChildren.Add(child.gameObject);
-        }
+        }*/
     }
 
     public void SelectObject(string objIdx)
@@ -30,7 +31,7 @@ public class Selection: MonoBehaviour
         {
             if (int.TryParse(part, out int number))
             {
-                selectedObjects.Add(rootChildren[number]);
+                selectedObjects.Add(parser.rootChildren[number]);
             }
             else
             {

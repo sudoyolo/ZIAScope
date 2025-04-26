@@ -1,16 +1,17 @@
 using OpenAI;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class Whisper : MonoBehaviour
 {
     [SerializeField] private Button recordButton;
     [SerializeField] private Image progressBar;
-    [SerializeField] private Text message;
+    [SerializeField] private TextMeshProUGUI aiMessage;
     [SerializeField] private Dropdown dropdown;
     [SerializeField] private AIManager aiManager;
     private readonly string fileName = "output.wav";
-    private readonly int duration = 5;
+    private readonly int duration = 4;
     
     private AudioClip clip;
     private bool isRecording;
@@ -41,6 +42,7 @@ public class Whisper : MonoBehaviour
     
     private void StartRecording()
     {
+        aiMessage.text = "...";
         isRecording = true;
         recordButton.enabled = false;
 
@@ -53,7 +55,7 @@ public class Whisper : MonoBehaviour
 
     private async void EndRecording()
     {
-        message.text = "Transcripting...";
+        //message.text = "Transcripting...";
         
         #if !UNITY_WEBGL
         Microphone.End(null);
@@ -71,7 +73,7 @@ public class Whisper : MonoBehaviour
         var res = await openai.CreateAudioTranscription(req);
 
         progressBar.fillAmount = 0;
-        message.text = res.Text;
+        //message.text = res.Text;
         print("Speech to text Whisper: "+res.Text);
         aiManager.GenerateAICommentary(res.Text);
         recordButton.enabled = true;

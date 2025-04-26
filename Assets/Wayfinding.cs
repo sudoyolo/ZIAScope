@@ -39,6 +39,8 @@ public class Wayfinding : MonoBehaviour
 
     public void clearPaths(String arg)
     {
+        //Debug.Log("Clear paths called");
         pathManager.ClearPaths();
+        
     }
 }

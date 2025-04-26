@@ -1,6 +1,8 @@
 ﻿using OpenAI;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Text;
+using TMPro;
 
 namespace Samples.Whisper
 {
@@ -8,12 +10,12 @@ namespace Samples.Whisper
     {
         [SerializeField] private Button recordButton;
         [SerializeField] private Image progressBar;
-        //[SerializeField] private Text message;
+        [SerializeField] private TextMeshProUGUI message;
         [SerializeField] private Dropdown dropdown;
         [SerializeField] private AIManager aiManager;
         public ScrollingStringList scrollingList;
         private readonly string fileName = "output.wav";
-        private readonly int duration = 3;
+        private readonly int duration = 4;
         
         private AudioClip clip;
         private bool isRecording;
@@ -44,6 +46,7 @@ namespace Samples.Whisper
         
         private void StartRecording()
         {
+            message.text = "...";
             isRecording = true;
             recordButton.enabled = false;
 

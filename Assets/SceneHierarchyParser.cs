@@ -36,19 +36,21 @@ public class SceneHierarchyParser : MonoBehaviour
         output.AppendLine($"Items in {root.name}:");
 
         int index = 0;
+        rootChildren = new List<GameObject>();
+
         foreach (Transform child in root.transform){
             rootChildren.Add(child.gameObject);
             output.AppendLine($"[{index}] {DescribeObject(child.gameObject)}");
             index++;
         }
-
+        Debug.Log("Number of objects in scene: " + index);
         return output.ToString();
     }
 
     string DescribeObject(GameObject obj)
     {
         Transform t = obj.transform;
-        Vector3 size = GetObjectSize(obj);
+        float size = GetObjectVolume(obj);
         Renderer renderer = obj.GetComponent<Renderer>();
         string materialName = renderer != null && renderer.material != null ? renderer.material.name.Replace(" (Instance)", "") : "None";
 
@@ -103,16 +105,18 @@ public class SceneHierarchyParser : MonoBehaviour
         return Mathf.RoundToInt(distance);
     }
 
-    Vector3 GetObjectSize(GameObject obj)
+    float GetObjectVolume(GameObject obj)
     {
         Renderer renderer = obj.GetComponent<Renderer>();
         if (renderer != null)
         {
-            return renderer.bounds.size;
+            Vector3 size = renderer.bounds.size;
+            return size.x * size.y * size.z;
         }
         else
         {
-            return Vector3.one;
+            return 1f; // Default fallback volume
         }
     }
+
 }
