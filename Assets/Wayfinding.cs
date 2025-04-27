@@ -9,37 +9,35 @@ public class Wayfinding : MonoBehaviour
     public Selection selection;
     public PathManager pathManager;
     public Transform user;
-    public void illuminatePathToDestination(String arg)
-    {
-        int.TryParse(arg, out int idxObject);
-        if (selection.selectedObjects.Count != 1)
-        {
-            print("Invalid number of selected objects for illumination path");
-            return;
-        }
-        pathManager.DrawPath(user,selection.selectedObjects[0].transform);
-        
-    }
 
     public void illuminatePathBetweenDestinations(String arg)
     {
+        //can retrieve indexes of path. 
         if (selection.selectedObjects.Count == 1)
         {
-            print("Creating Path from user as only one destination is selected. ");
+            pathManager.DrawPath(user, selection.selectedObjects[0].transform, -1, selection.selectedObjects[0].GetInstanceID());
         }
+        else if (selection.selectedObjects.Count == 2)
+        { 
+            pathManager.DrawPath(selection.selectedObjects[0].transform,selection.selectedObjects[1].transform,selection.selectedObjects[0].GetInstanceID(), selection.selectedObjects[1].GetInstanceID());
+        }
+    }
 
-        if (selection.selectedObjects.Count != 2)
+    public void clearSinglePath(String arg)
+    {
+        if (selection.selectedObjects.Count == 1)
         {
-            print("Invalid number of selected objects for illumination path");
-            return;
+            pathManager.ClearSinglePath(-1, selection.selectedObjects[0].GetInstanceID());
         }
-        pathManager.DrawPath(selection.selectedObjects[0].transform,selection.selectedObjects[1].transform);
+        else if (selection.selectedObjects.Count == 2)
+        { 
+            pathManager.ClearSinglePath(selection.selectedObjects[0].GetInstanceID(), selection.selectedObjects[1].GetInstanceID());
+        }
         
     }
 
     public void clearPaths(String arg)
     {
-        //Debug.Log("Clear paths called");
         pathManager.ClearPaths();
         
     }

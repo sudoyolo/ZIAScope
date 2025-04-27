@@ -32,54 +32,18 @@ public class SingleNavPath : MonoBehaviour
             if (lineRenderer is not null && path is not null)
             {
                 lineRenderer.positionCount = path.corners.Length;
-                lineRenderer.SetPositions(path.corners);
+                Vector3[] raised_path = new Vector3[path.corners.Length];
+                for (int i = 0; i < path.corners.Length; i++)
+                {
+                    raised_path[i] = path.corners[i] + Vector3.up * 0.03f; // Lift by 1 cm
+                }
+                lineRenderer.SetPositions(raised_path);
             }
 
             lastUpdateTime = Time.time;
         }
        
     }
-    /*
-    NavMeshPath FindBestPathNear(Vector3 sourcePosition, Vector3 targetPosition, float radius, int sampleCount = 10)
-    {
-        NavMeshPath bestPath = null;
-        float bestPathLength = float.MaxValue;
-
-        for (int i = 0; i < sampleCount; i++)
-        {
-            Vector2 randomOffset = Random.insideUnitCircle * radius;
-            Vector3 samplePos = targetPosition + new Vector3(randomOffset.x, 0, randomOffset.y);
-
-            // Make sure it's on the NavMesh
-            if (NavMesh.SamplePosition(samplePos, out NavMeshHit hit, 1.0f, NavMesh.AllAreas);)
-            {
-                NavMeshPath path = new NavMeshPath();
-                if (NavMesh.CalculatePath(sourcePosition, hit.position, NavMesh.AllAreas, path)
-                    && path.status == NavMeshPathStatus.PathComplete)
-                {
-                    float length = GetPathLength(path);
-                    if (length < bestPathLength)
-                    {
-                        bestPath = path;
-                        bestPathLength = length;
-                    }
-                }
-            }
-        }
-
-        return bestPath;
-    }
-
-// Helper function to measure path length
-    float GetPathLength(NavMeshPath path)
-    {
-        float length = 0f;
-        for (int i = 1; i < path.corners.Length; i++)
-        {
-            length += Vector3.Distance(path.corners[i - 1], path.corners[i]);
-        }
-        return length;
-    }*/
 
 }
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,23 +12,28 @@ public class PathManager : MonoBehaviour
 
     private int pathCount = 0;
     private List<GameObject> pathObjects;
-    
+    private Dictionary<Tuple<int, int>, GameObject> objectPaths;
     void Awake()
     {
         pathObjects = new List<GameObject>();
+        objectPaths = new Dictionary<Tuple<int, int>, GameObject>();
     }
     
     /// <summary>
     /// Draws a new path using a LineRenderer.
     /// </summary>
     /// <param name="points">The positions to connect in the path.</param>
-    public void DrawPath(Transform start, Transform end)
+    public void DrawPath(Transform start, Transform end, int idx1, int idx2)
     {
+        if (objectPaths.ContainsKey(Tuple.Create(idx1, idx2))) return;
+        
         GameObject pathObj = new GameObject($"Path_{pathCount}");
         pathObj.transform.parent = this.transform;
+        objectPaths[Tuple.Create(idx1, idx2)] = pathObj;
         pathCount++;
 
         LineRenderer lr = pathObj.AddComponent<LineRenderer>();
+
         SingleNavPath path_data = pathObj.AddComponent<SingleNavPath>();
         path_data.lineRenderer = lr;
         lr.widthMultiplier = lineWidth;
@@ -51,6 +57,19 @@ public class PathManager : MonoBehaviour
         }
         pathObjects.Clear();
         pathCount = 0;
+        objectPaths.Clear();
     }
-
+    /// <summary>
+    /// Clears a single path.
+    /// </summary>
+    public void ClearSinglePath(int idx1, int idx2)
+    {
+        if(objectPaths.ContainsKey(Tuple.Create(idx1, idx2))){
+            GameObject obj = objectPaths[Tuple.Create(idx1, idx2)];
+            objectPaths.Remove(Tuple.Create(idx1, idx2));
+            pathObjects.Remove(obj);
+            Destroy(obj);
+            pathCount -= 1;
+        }
+    }
 }

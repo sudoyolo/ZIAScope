@@ -28,8 +28,8 @@ public class Manipulation : MonoBehaviour
             AssignTag,
             DuplicateObject,
             DeleteObject,
-            wayfinding.illuminatePathToDestination,
             wayfinding.illuminatePathBetweenDestinations,
+            wayfinding.clearSinglePath,
             wayfinding.clearPaths
         };
     }

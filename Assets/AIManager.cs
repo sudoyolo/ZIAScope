@@ -71,16 +71,19 @@ public class AIManager : MonoBehaviour
         prompt += "[7] Create duplicate: user wants to create a new duplicate object. Return \'empty\' in place of the args, eg. \'7 empty\'.\n";
         prompt += "[8] Delete object: user wants to delete a selected object. Return \'empty\' in place of the args, eg. \'8 empty\'.\n";
         // WAYFINDING
-        prompt += "[9] Show path from user: user wants to find a path between themselves and a location object. Return object index e.g. \'8 5\'\n";
-        prompt += "[10] Show path between two objects: user wants to illuminate a path to two location objects e.g. \'9 7 12\'";
-        prompt += "[11] Clear all existing paths: user wants to remove and stop showing all previous paths. Simply return \'10 clear paths\'";
+        prompt += "[9] Show path between two locations: If user is one of the location objects, only include one argument. e.g. \'9 12\'. If user is not one of the locations, return object indices of the relevant objects. \'9 23 62\'\n";
+        prompt += "[10] Clear single path: user wants to remove a single path. Return only one argument if the path is between the user and an object. e.g. \'10 63\'. Return two arguments if the path is between two objects that don't include the user \'10 23 64\'\n";
+        prompt += "[11] Clear all existing paths: user wants to remove and stop showing all previous paths. Simply return \'11 clear paths\'\n";
+
         // TWEAKS
         prompt += "For all functions except for Selection, if there is an implicit choice of object, eg. \'make chairs red\' then selection should be called before color change.\n";
         prompt += "Example, where chair is scene idx 1: \'Select the chair, change its color to red, move it back\' should return string \'0 1, 4 red, 1 backward 1\' \n";
         prompt += "Another example, where two spheres are idx 0 1: \'Move the spheres forward and tag them as new\' should return string \'0 0 1, 1 forward, 6 new\' \n";
-        prompt += "For the function involving paths, call selection on relevant objects prior to calling the Add Path command. \n";
-        prompt += "An example, the fridge idx is 63: \'Take me to the fridge\' should return \'0 63, 8 63\'\n";
+        prompt += "For the function involving paths, call selection on relevant objects prior to calling the Add Path command. Paths involving the user should have one selected object. Paths not including the user should have two selected objects. \n";
+        prompt += "An example, the fridge idx is 63: \'Take me to the fridge\' should return \'0 63, 9 63\'\n";
         prompt += "Another example, the fridge idx is 63 and the couch idx is 25: \'Show me the shortest route between the couch and the fridge\' should return \'0 63 25, 9 63 25\'\n";
+        prompt += "Similarly, for deleting a single path, if the query includes the user as an object for the path, only include one argument in the selection. e.g. \'Delete the route to the couch\' when the couch idx is 25 should be \'0 25, 10 25\'\n";
+        prompt += "If the route doesn't include the user as an object for the path, there should be two arguments for each of the corresponding objects in the selection. e.g. \'Delete the route between the couch and the fridge\', then if the couch index is 63 and the fridge index is 25, return \'0 63 25, 10 63 25\'\n";
         // BACK-AND-FORTH
         prompt += "If the user's input is unclear, return ? followed by a message asking for more confirmation.\n";
         prompt += "For example, if they ask to select something that is not in the scene, return something like \'? Sorry, I couldn't understand which object you meant, try again?\'";
