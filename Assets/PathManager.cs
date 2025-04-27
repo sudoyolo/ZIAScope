@@ -26,7 +26,7 @@ public class PathManager : MonoBehaviour
     public void DrawPath(Transform start, Transform end, int idx1, int idx2)
     {
         if (objectPaths.ContainsKey(Tuple.Create(idx1, idx2))) return;
-        
+        if (objectPaths.ContainsKey(Tuple.Create(idx2, idx1))) return;
         GameObject pathObj = new GameObject($"Path_{pathCount}");
         pathObj.transform.parent = this.transform;
         objectPaths[Tuple.Create(idx1, idx2)] = pathObj;
@@ -64,12 +64,16 @@ public class PathManager : MonoBehaviour
     /// </summary>
     public void ClearSinglePath(int idx1, int idx2)
     {
-        if(objectPaths.ContainsKey(Tuple.Create(idx1, idx2))){
-            GameObject obj = objectPaths[Tuple.Create(idx1, idx2)];
-            objectPaths.Remove(Tuple.Create(idx1, idx2));
-            pathObjects.Remove(obj);
-            Destroy(obj);
-            pathCount -= 1;
+        if (!objectPaths.ContainsKey(Tuple.Create(idx1, idx2)) &&
+            !objectPaths.ContainsKey(Tuple.Create(idx2, idx1))) return;
+        if (objectPaths.ContainsKey(Tuple.Create(idx2, idx1)))
+        {
+            (idx1, idx2) = (idx2, idx1);
         }
+        GameObject obj = objectPaths[Tuple.Create(idx1, idx2)];
+        objectPaths.Remove(Tuple.Create(idx1, idx2));
+        pathObjects.Remove(obj);
+        Destroy(obj);
+        pathCount -= 1;
     }
 }

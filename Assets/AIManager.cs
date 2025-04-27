@@ -71,7 +71,7 @@ public class AIManager : MonoBehaviour
         prompt += "[7] Create duplicate: user wants to create a new duplicate object. Return \'empty\' in place of the args, eg. \'7 empty\'.\n";
         prompt += "[8] Delete object: user wants to delete a selected object. Return \'empty\' in place of the args, eg. \'8 empty\'.\n";
         // WAYFINDING
-        prompt += "[9] Show path between two locations: If user is one of the location objects, only include one argument. e.g. \'9 12\'. If user is not one of the locations, return object indices of the relevant objects. \'9 23 62\'\n";
+        prompt += "[9] Show path between two locations: If user is one of the location objects, only include one argument. If only one object is specified in the query, then it is implied that the user is the other objects. e.g. the query \'route to fridge\' returns \'9 12\'. If user is not one of the location objects, return object indices of the relevant objects. \'9 23 62\'\n";
         prompt += "[10] Clear single path: user wants to remove a single path. Return only one argument if the path is between the user and an object. e.g. \'10 63\'. Return two arguments if the path is between two objects that don't include the user \'10 23 64\'\n";
         prompt += "[11] Clear all existing paths: user wants to remove and stop showing all previous paths. Simply return \'11 clear paths\'\n";
 
@@ -82,6 +82,7 @@ public class AIManager : MonoBehaviour
         prompt += "For the function involving paths, call selection on relevant objects prior to calling the Add Path command. Paths involving the user should have one selected object. Paths not including the user should have two selected objects. \n";
         prompt += "An example, the fridge idx is 63: \'Take me to the fridge\' should return \'0 63, 9 63\'\n";
         prompt += "Another example, the fridge idx is 63 and the couch idx is 25: \'Show me the shortest route between the couch and the fridge\' should return \'0 63 25, 9 63 25\'\n";
+        prompt += "A query such as \'Show path to fridge\' or \'Delete path to fridge\' assumes the user as one of the location objects for the path and thus only returns one argument.\n";
         prompt += "Similarly, for deleting a single path, if the query includes the user as an object for the path, only include one argument in the selection. e.g. \'Delete the route to the couch\' when the couch idx is 25 should be \'0 25, 10 25\'\n";
         prompt += "If the route doesn't include the user as an object for the path, there should be two arguments for each of the corresponding objects in the selection. e.g. \'Delete the route between the couch and the fridge\', then if the couch index is 63 and the fridge index is 25, return \'0 63 25, 10 63 25\'\n";
         // BACK-AND-FORTH
