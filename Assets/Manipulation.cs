@@ -12,6 +12,7 @@ public class Manipulation : MonoBehaviour
     public List<Material> materialList = new List<Material>();
     public Wayfinding wayfinding;
     public SceneHierarchyParser parser;
+    public ScrollingStringList scrollingList;
 
     // Start is called before the first frame update
     void Start()
@@ -42,27 +43,72 @@ public class Manipulation : MonoBehaviour
 
     public void parseFunctions(string command)
     {
-        if (command.Contains("Nothing")) { return; }
+        if (string.IsNullOrWhiteSpace(command) || command.Contains("Nothing"))
+        {
+            return;
+        }
 
         int i = 0;
         while (i < command.Length)
         {
             // Skip whitespace
-            while (i < command.Length && command[i] == ' ')
+            while (i < command.Length && command[i] == ' ') { i++; }
+            if (i >= command.Length)
+                break;
+
+            // Handle commands starting with '?'
+            if (command[i] == '?')
             {
-                i++;
+                i++; // move past '?'
+                while (i < command.Length && command[i] == ' ') { i++; }
+                if (i >= command.Length || command[i] != '"')
+                {
+                    Debug.LogError("Expected opening quotation mark after '?' at position " + i);
+                    break;
+                }
+                i++; // move past opening quote
+
+                int quoteStart = i;
+                while (i < command.Length && command[i] != '"')
+                {
+                    i++;
+                }
+                if (i >= command.Length)
+                {
+                    Debug.LogError("Missing closing quotation mark for special command starting at position " + quoteStart);
+                    break;
+                }
+
+                string specialCommand = command.Substring(quoteStart, i - quoteStart);
+                HandleSpecialCommand(specialCommand);
+
+                i++; // move past closing quote
+                while (i < command.Length && (command[i] == ' ' || command[i] == ',' || command[i]=='\n')) { i++; } // move past whitespace/comma
+                continue;
             }
 
+            if(i == command.Length || i == command.Length-1){break;}
             // Parse full function index (supports multi-digit numbers)
+            if (!char.IsDigit(command[i]))
+            {
+                Debug.LogError($"Unexpected character '{command[i]}' at position {i}. Expected a digit or '?'.");
+                break;
+            }
+
             int funcStart = i;
             while (i < command.Length && char.IsDigit(command[i]))
             {
                 i++;
             }
-            string funcStr = command.Substring(funcStart, i - funcStart);
-            int funcIndex = int.Parse(funcStr);
 
-            // Parse argument
+            string funcStr = command.Substring(funcStart, i - funcStart);
+            if (!int.TryParse(funcStr, out int funcIndex))
+            {
+                Debug.LogError($"Failed to parse function index at position {funcStart}: '{funcStr}'");
+                break;
+            }
+
+            // Parse argument (optional)
             int argStart = i;
             while (i < command.Length && command[i] != ',')
             {
@@ -73,10 +119,10 @@ public class Manipulation : MonoBehaviour
             // Call the function
             if (funcIndex >= 0 && funcIndex < functionList.Count)
             {
-                if (funcIndex != 0 && selection.selectedObjects.Count == 0)
+                if (funcIndex != 0 && (selection == null || selection.selectedObjects.Count == 0))
                 {
-                    Debug.Log("No previous selection exists, only manipulation applied.");
-                    return;
+                    Debug.LogWarning("No previous selection exists, only manipulation applied.");
+                    // still continue parsing next functions!
                 }
                 functionList[funcIndex].Invoke(arg);
             }
@@ -85,9 +131,18 @@ public class Manipulation : MonoBehaviour
                 Debug.LogError("Invalid function index: " + funcIndex);
             }
 
-            i++; // Move past the comma
+            if (i < command.Length && command[i] == ',')
+                i++; // move past comma
         }
     }
+
+    private void HandleSpecialCommand(string specialCommand)
+    {
+        Debug.Log("Handling special command: \"" + specialCommand + "\"");
+        scrollingList.AddString(specialCommand, "lightblue");
+        // Add your special command logic here
+    }
+
 
     // set position to coordinates
     public void SetPosition(string input)

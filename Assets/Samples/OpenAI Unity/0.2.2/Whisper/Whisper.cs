@@ -78,7 +78,7 @@ namespace Samples.Whisper
 
             progressBar.fillAmount = 0;
             //message.text = res.Text;
-            scrollingList.AddString(res.Text);
+            scrollingList.AddString(res.Text, "white");
             aiManager.GenerateAICommentary(res.Text);
             recordButton.enabled = true;
         }
