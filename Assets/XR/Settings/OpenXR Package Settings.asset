@@ -117,22 +117,24 @@ MonoBehaviour:
   m_Name: Android
   m_EditorClassIdentifier: 
   features:
-  - {fileID: -1820441297290970412}
-  - {fileID: 8596054305106197955}
-  - {fileID: -1662977376319817099}
-  - {fileID: -2483104511822461432}
-  - {fileID: 7518542049174707158}
-  - {fileID: -5508461235994976616}
-  - {fileID: 4056302229329113525}
-  - {fileID: -3925622111074235528}
-  - {fileID: 2485266154446738202}
-  - {fileID: 2966852943141459052}
-  - {fileID: 3273910443087875696}
-  - {fileID: -4529712622169332725}
-  - {fileID: -385847804782812249}
-  - {fileID: 2866133976142874918}
-  - {fileID: -6818482209030853077}
   - {fileID: 5263633185293914259}
+  - {fileID: 7518542049174707158}
+  - {fileID: 2866133976142874918}
+  - {fileID: -2483104511822461432}
+  - {fileID: -3925622111074235528}
+  - {fileID: 4056302229329113525}
+  - {fileID: -2395690679478168135}
+  - {fileID: -1662977376319817099}
+  - {fileID: 3273910443087875696}
+  - {fileID: 2966852943141459052}
+  - {fileID: -5508461235994976616}
+  - {fileID: -6818482209030853077}
+  - {fileID: 8596054305106197955}
+  - {fileID: 2485266154446738202}
+  - {fileID: -4529712622169332725}
+  - {fileID: -1820441297290970412}
+  - {fileID: -385847804782812249}
+  - {fileID: 8258205479291733895}
   m_renderMode: 1
   m_autoColorSubmissionMode: 1
   m_colorSubmissionModes:
@@ -258,6 +260,26 @@ MonoBehaviour:
   version: 0.0.1
   featureIdInternal: com.unity.openxr.feature.input.handinteractionposes
   openxrExtensionStrings: XR_EXT_hand_interaction
+  company: Unity
+  priority: 0
+  required: 0
+--- !u!114 &-2395690679478168135
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3aced3429e5911458f4da2dac9d0f29, type: 3}
+  m_Name: MetaHandTrackingAim Android
+  m_EditorClassIdentifier: 
+  m_enabled: 1
+  nameUi: Meta Hand Tracking Aim
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.metahandtrackingaim
+  openxrExtensionStrings: XR_FB_hand_tracking_aim
   company: Unity
   priority: 0
   required: 0
@@ -459,11 +481,11 @@ MonoBehaviour:
   m_Name: XrPerformanceSettingsFeature WebGL
   m_EditorClassIdentifier: 
   m_enabled: 0
-  nameUi: 
-  version: 
-  featureIdInternal: 
-  openxrExtensionStrings: 
-  company: 
+  nameUi: XR Performance Settings
+  version: 1.0.0
+  featureIdInternal: com.unity.openxr.feature.extension.performance_settings
+  openxrExtensionStrings: XR_EXT_performance_settings
+  company: Unity
   priority: 0
   required: 0
 --- !u!114 &275137210063270998
@@ -526,6 +548,46 @@ MonoBehaviour:
   company: Unity
   priority: 0
   required: 0
+--- !u!114 &721879207006964712
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e314dfef9af0904e80129bcc0a79361, type: 3}
+  m_Name: HandTracking Standalone
+  m_EditorClassIdentifier: 
+  m_enabled: 0
+  nameUi: Hand Tracking Subsystem
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.handtracking
+  openxrExtensionStrings: XR_EXT_hand_tracking
+  company: Unity
+  priority: -100
+  required: 0
+--- !u!114 &1446257524223509124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3aced3429e5911458f4da2dac9d0f29, type: 3}
+  m_Name: MetaHandTrackingAim Standalone
+  m_EditorClassIdentifier: 
+  m_enabled: 0
+  nameUi: Meta Hand Tracking Aim
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.metahandtrackingaim
+  openxrExtensionStrings: XR_FB_hand_tracking_aim
+  company: Unity
+  priority: 0
+  required: 0
 --- !u!114 &1918553746234638151
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -539,24 +601,26 @@ MonoBehaviour:
   m_Name: Standalone
   m_EditorClassIdentifier: 
   features:
-  - {fileID: -6083089027694648915}
-  - {fileID: 3128607163495984687}
+  - {fileID: -7073830249080392627}
   - {fileID: 2119961591916328253}
+  - {fileID: -3150735963333043652}
+  - {fileID: 3128607163495984687}
+  - {fileID: 410141614509805468}
   - {fileID: 3135992665542013256}
+  - {fileID: -1969836767513577723}
+  - {fileID: -4123816673324574596}
+  - {fileID: 1446257524223509124}
+  - {fileID: -470528309909099341}
+  - {fileID: 6044102113331891679}
   - {fileID: -2157212699414255714}
   - {fileID: 275137210063270998}
-  - {fileID: 475799851371892761}
-  - {fileID: -4123816673324574596}
-  - {fileID: 410141614509805468}
-  - {fileID: 4481962839739223078}
-  - {fileID: 6044102113331891679}
-  - {fileID: -470528309909099341}
-  - {fileID: 3726074757823886342}
-  - {fileID: -1845793345964567820}
-  - {fileID: -1969836767513577723}
-  - {fileID: -3150735963333043652}
   - {fileID: -7867015025342487027}
-  - {fileID: -7073830249080392627}
+  - {fileID: 4481962839739223078}
+  - {fileID: 3726074757823886342}
+  - {fileID: -6083089027694648915}
+  - {fileID: 475799851371892761}
+  - {fileID: -1845793345964567820}
+  - {fileID: 721879207006964712}
   m_renderMode: 1
   m_autoColorSubmissionMode: 1
   m_colorSubmissionModes:
@@ -630,7 +694,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5a1f07dc5afe854f9f12a4194aca3fb, type: 3}
   m_Name: WebGL
   m_EditorClassIdentifier: 
-  features: []
+  features:
+  - {fileID: 101543388611659678}
   m_renderMode: 1
   m_autoColorSubmissionMode: 1
   m_colorSubmissionModes:
@@ -872,6 +937,26 @@ MonoBehaviour:
   extensionStrings:
   - XR_KHR_binding_modification
   - XR_EXT_dpad_binding
+--- !u!114 &8258205479291733895
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e314dfef9af0904e80129bcc0a79361, type: 3}
+  m_Name: HandTracking Android
+  m_EditorClassIdentifier: 
+  m_enabled: 1
+  nameUi: Hand Tracking Subsystem
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.handtracking
+  openxrExtensionStrings: XR_EXT_hand_tracking
+  company: Unity
+  priority: -100
+  required: 0
 --- !u!114 &8596054305106197955
 MonoBehaviour:
   m_ObjectHideFlags: 0

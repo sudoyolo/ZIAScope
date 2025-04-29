@@ -13,6 +13,7 @@ public class Manipulation : MonoBehaviour
     public Wayfinding wayfinding;
     public SceneHierarchyParser parser;
     public ScrollingStringList scrollingList;
+    public UndoRedoManager undoredo;
 
     // Start is called before the first frame update
     void Start()
@@ -20,22 +21,34 @@ public class Manipulation : MonoBehaviour
         //selection = GetComponent<Selection>();
         functionList = new List<Action<string>>
         {
-            selection.SelectObject,
-            ChangePosition,
-            SetPosition,
-            RotateObj,
-            ChangeColor,
-            ChangeMaterial,
-            AssignTag,
-            DuplicateObject,
-            DeleteObject,
-            wayfinding.illuminatePathBetweenDestinations,
-            wayfinding.clearSinglePath,
-            wayfinding.clearPaths
+            selection.SelectObject,                      // 0
+            ChangePosition,                              // 1
+            SetPosition,                                 // 2
+            RotateObj,                                   // 3
+            ChangeColor,                                 // 4
+            ChangeMaterial,                              // 5
+            AssignTag,                                   // 6
+            DuplicateObject,                             // 7
+            DeleteObject,                                // 8
+            wayfinding.illuminatePathBetweenDestinations,// 9
+            wayfinding.clearSinglePath,                  // 10
+            wayfinding.clearPaths,                       // 11
+            GoAlongPath,   //filler to index undo/redo   // 12
+            TeleportToObj, // filler                     // 13
+            undoredo.Undo,                               // 14
+            undoredo.Redo                                // 15
         };
     }
 
-    // Update is called once per frame
+    public void GoAlongPath(string input)
+    {
+        // empty filler, delete later
+    }
+    public void TeleportToObj(string input)
+    {
+        // empty filler, delete later
+    }
+
     void Update()
     {
         
@@ -96,10 +109,7 @@ public class Manipulation : MonoBehaviour
             }
 
             int funcStart = i;
-            while (i < command.Length && char.IsDigit(command[i]))
-            {
-                i++;
-            }
+            while (i < command.Length && char.IsDigit(command[i])) {i++;}
 
             string funcStr = command.Substring(funcStart, i - funcStart);
             if (!int.TryParse(funcStr, out int funcIndex))
@@ -108,7 +118,6 @@ public class Manipulation : MonoBehaviour
                 break;
             }
 
-            // Parse argument (optional)
             int argStart = i;
             while (i < command.Length && command[i] != ',')
             {
@@ -140,11 +149,8 @@ public class Manipulation : MonoBehaviour
     {
         Debug.Log("Handling special command: \"" + specialCommand + "\"");
         scrollingList.AddString(specialCommand, "lightblue");
-        // Add your special command logic here
     }
 
-
-    // set position to coordinates
     public void SetPosition(string input)
     {
         string[] values = input.Split(';');
@@ -345,4 +351,5 @@ public class Manipulation : MonoBehaviour
 
         }
     }
+
 }

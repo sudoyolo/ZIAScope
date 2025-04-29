@@ -57,7 +57,7 @@ public class ScrollingStringList : MonoBehaviour
         switch (colorName.ToLower())
         {
             case "lightblue": 
-                return new Color(0.231f, 0.808f, 1.0f); // Light blue RGB
+                return new Color(0.231f, 0.799f, 1.0f); // Light blue RGB
             case "white":
                 return Color.white;
             default:
