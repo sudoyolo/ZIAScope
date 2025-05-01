@@ -33,20 +33,11 @@ public class Manipulation : MonoBehaviour
             wayfinding.illuminatePathBetweenDestinations,// 9
             wayfinding.clearSinglePath,                  // 10
             wayfinding.clearPaths,                       // 11
-            GoAlongPath,   //filler to index undo/redo   // 12
-            TeleportToObj, // filler                     // 13
+            wayfinding.GoAlongPath,                      // 12
+            wayfinding.TeleportToObj,                    // 13
             undoredo.Undo,                               // 14
             undoredo.Redo                                // 15
         };
-    }
-
-    public void GoAlongPath(string input)
-    {
-        // empty filler, delete later
-    }
-    public void TeleportToObj(string input)
-    {
-        // empty filler, delete later
     }
 
     void Update()

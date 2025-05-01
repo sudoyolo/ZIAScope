@@ -3,13 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Wayfinding : MonoBehaviour
 {
     public Selection selection;
     public PathManager pathManager;
     public Transform user;
-
+    public MoveAlongPath xrOrigin;
+    
     public void illuminatePathBetweenDestinations(String arg)
     {
         //can retrieve indexes of path. 
@@ -25,6 +27,12 @@ public class Wayfinding : MonoBehaviour
 
     public void clearSinglePath(String arg)
     {
+        if (arg.Contains("ClearPathCalledFromNavMesh"))
+        {
+            String[] parts = arg.Split(' ');
+            pathManager.ClearSinglePath(-1, int.Parse(parts[1]));
+            return;
+        }
         if (selection.selectedObjects.Count == 1)
         {
             pathManager.ClearSinglePath(-1, selection.selectedObjects[0].GetInstanceID());
@@ -36,9 +44,24 @@ public class Wayfinding : MonoBehaviour
         
     }
 
-    public void clearPaths(String arg)
+    public void clearPaths(String input)
     {
         pathManager.ClearPaths();
+    }
+    public void GoAlongPath(String input)
+    {
+        illuminatePathBetweenDestinations(input);
+        if (selection.selectedObjects.Count == 1)
+        {
+            NavMesh.SamplePosition(selection.selectedObjects[0].transform.position, out NavMeshHit hit1, 5f, NavMesh.AllAreas);
+            xrOrigin.startTravelling(hit1.position, selection.selectedObjects[0].GetInstanceID());
+        }
+
+    }
+    public void TeleportToObj(String input)
+    {
+       
         
+       
     }
 }

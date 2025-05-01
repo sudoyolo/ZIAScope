@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -28,13 +29,13 @@ public class UndoRedoManager : MonoBehaviour
         actionList.AddLast(input);
     }
 
-    public void Undo(string input)
+    public void Undo(String input)
     {
         manipulation.parseFunctions(actionList.Last.Value);
 
     }
 
-    public void Redo(string input)
+    public void Redo(String input)
     {
 
     }

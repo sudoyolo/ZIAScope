@@ -76,21 +76,26 @@ public class AIManager : MonoBehaviour
         prompt += "[9] Show path between two locations: If user is one of the location objects, only include one argument. If only one object is specified in the query, then it is implied that the user is the other objects. e.g. the query \'route to fridge\' returns \'9 12\'. If user is not one of the location objects, return object indices of the relevant objects. \'9 23 62\'\n";
         prompt += "[10] Clear single path: user wants to remove a single path. Return only one argument if the path is between the user and an object. e.g. \'10 63\'. Return two arguments if the path is between two objects that don't include the user \'10 23 64\'\n";
         prompt += "[11] Clear all existing paths: user wants to remove and stop showing all previous paths. Simply return \'11 clear paths\'\n";
+        prompt += "[12] Move the user along the path to an object. Return the destination object index as an argument. Return \'12 35\'";
+        prompt += "[13] Teleport to Object: Teleport the user to the location of an object. Pass the index of the object as the argument. E.g. \'13 25\' ";
         // TWEAKS
         prompt += "For all functions except for Selection, if there is an implicit choice of object, eg. \'make chairs red\' then selection should be called before manipulating that object further. Often you will have to check prompt log to ensure you are selecting the correct object.\n";
         prompt += "Example, where chair is scene idx 1: \'Select the chair, change its color to red, move it back\' should return string \'0 1, 4 red, 1 backward 1, ?\"Made the chairs red and moved them backwards by one.\"\' \n";
         prompt += "Another example, where entire scene is couches with idx 0 1: \'Move everything forward and tag them as new\' should return string \'0 0 1, 1 forward 1, 6 new,?\"Every object moved foward and tagged as new\"\' \n";
-        prompt += "For the function involving paths, call selection on relevant objects prior to calling the Add Path command. Paths involving the user should have one selected object. Paths not including the user should have two selected objects. \n";
+        prompt += "For functions involving paths and teleportation, call selection on relevant objects prior to calling the relevant Path command. Paths involving the user should have one selected object. Paths not including the user should have two selected objects. \n";
         prompt += "An example, the fridge idx is 63: \'Take me to the fridge\' should return \'0 63, 9 63\'\n";
         prompt += "Another example, the fridge idx is 63 and the couch idx is 25: \'Show me the shortest route between the couch and the fridge\' should return \'0 63 25, 9 63 25\'\n";
         prompt += "A query such as \'Show path to fridge\' or \'Delete path to fridge\' assumes the user as one of the location objects for the path and thus only returns one argument.\n";
+        prompt +=
+            "If the user query relates to showing or illustrating a path, choose function 9 as the target function to return. If a user query relates to moving or travelling along a path, choose function 12 as the target function to return. \n";
+        prompt += "Prior to moving the user along the path to an object, call selection on the destination object. e.g. query \'Move along path to fridge.\'";
         prompt += "Similarly, for deleting a single path, if the query includes the user as an object for the path, only include one argument in the selection. e.g. \'Delete the route to the couch\' when the couch idx is 25 should be \'0 25, 10 25\'\n";
         prompt += "If the route doesn't include the user as an object for the path, there should be two arguments for each of the corresponding objects in the selection. e.g. \'Delete the route between the couch and the fridge\', then if the couch index is 63 and the fridge index is 25, return \'0 63 25, 10 63 25\'\n";
         // FEEDBACK
         prompt += "For every command, make sure to also provide short feedback note explaining what you understood, in the format of a ? followed by text enclosed in quotation marks.\n";
         prompt += "For example, an entire command string could be 0 5, 4 0;0;0, ?\"Changing chair to black\"\n";
         // FURTHER PROMPTING
-        prompt += "If the user's input is unclear, ? followed by a message can also be used to ask for more confirmation. This message should be encapsulated in quotation marks, e.g. ? \"Please repeat what you said.\"\n";
+        prompt += "If the user's input is unclear, \'?\' followed by a message can also be used to ask for more confirmation. This message should be encapsulated in quotation marks, e.g. ? \"Please repeat what you said.\"\n";
         prompt += "For example, if they ask to select something that is not in the scene, return something like \'? \"Sorry, I couldn't understand which object you meant, try again?\"\'";
         prompt += "Another example, if it is unclear which specific object is being referred to, such as \'Select that chair\', you can ask \'Which chair? The one closer to the door or to yourself?\'\n";
         prompt += "Do not be afraid to prompt for clarity, it is better to ask and be sure than to do something the user does not want. Especially for spatial queries. Avoid using numbers, especially object indexes. Do not ask for rgb values.\n";
