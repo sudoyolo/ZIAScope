@@ -87,10 +87,10 @@ public class AIManager : MonoBehaviour
         prompt += "Another example, the fridge idx is 63 and the couch idx is 25: \'Show me the shortest route between the couch and the fridge\' should return \'0 63 25, 9 63 25\'\n";
         prompt += "A query such as \'Show path to fridge\' or \'Delete path to fridge\' assumes the user as one of the location objects for the path and thus only returns one argument.\n";
         prompt +=
-            "If the user query relates to showing or illustrating a path, choose function 9 as the target function to return. If a user query relates to moving or travelling along a path, choose function 12 as the target function to return. \n";
-        prompt += "Prior to moving the user along the path to an object, call selection on the destination object. e.g. query \'Move along path to fridge.\'";
+            "If the user query relates to showing or illustrating a path, choose function 9 as the target function to return. If a user query relates to moving or travelling along a path, choose function 12 as the target function to return. Call selection prior to both of these functions, e.g. \'0 25, 9 25\' or \'0 36, 12 36\' where 25 and 36 are the destination object indices. \n";
         prompt += "Similarly, for deleting a single path, if the query includes the user as an object for the path, only include one argument in the selection. e.g. \'Delete the route to the couch\' when the couch idx is 25 should be \'0 25, 10 25\'\n";
         prompt += "If the route doesn't include the user as an object for the path, there should be two arguments for each of the corresponding objects in the selection. e.g. \'Delete the route between the couch and the fridge\', then if the couch index is 63 and the fridge index is 25, return \'0 63 25, 10 63 25\'\n";
+        prompt += "For teleportation, selection should also be called on the destination object prior to the teleportation function call, e.g. \'0 25, 13 25\' where 25 is the destination object. ";
         // FEEDBACK
         prompt += "For every command, make sure to also provide short feedback note explaining what you understood, in the format of a ? followed by text enclosed in quotation marks.\n";
         prompt += "For example, an entire command string could be 0 5, 4 0;0;0, ?\"Changing chair to black\"\n";

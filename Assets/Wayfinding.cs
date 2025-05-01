@@ -60,8 +60,10 @@ public class Wayfinding : MonoBehaviour
     }
     public void TeleportToObj(String input)
     {
-       
-        
-       
+        if (selection.selectedObjects.Count == 1)
+        {
+            NavMesh.SamplePosition(selection.selectedObjects[0].transform.position, out NavMeshHit hit1, 5f, NavMesh.AllAreas);
+            xrOrigin.teleport(hit1.position);
+        }
     }
 }

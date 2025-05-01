@@ -42,13 +42,16 @@ public class MoveAlongPath : MonoBehaviour
 
     }
 
+    public void teleport(Vector3 target)
+    {
+        transform.position = target;
+    }
+
     // Update is called once per frame
     void Update()
     {
-
         if (travelling)
         {
-            
             if (Vector3.Distance(transform.position, target) < 2f)
             {
                 //reached destination 
@@ -63,4 +66,5 @@ public class MoveAlongPath : MonoBehaviour
             }
         }
     }
+    
 }
