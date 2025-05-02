@@ -2048,9 +2048,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneObjects: {fileID: 674564425}
-  playerPos: {fileID: 1542828446}
-  selectedMat: {fileID: 2100000, guid: f181486056d5348ab8dd69320aa7be61, type: 2}
   parser: {fileID: 1245936387}
+  playerPos: {fileID: 1542828446}
+  selectedMat: {fileID: 2100000, guid: 5f9bdce2d551740c59e7473889dab0cd, type: 2}
   selectedObjects: []
   result: 
 --- !u!4 &661036271
@@ -4087,6 +4087,7 @@ MonoBehaviour:
   snapTurnProvider: {fileID: 1595558044}
   selection: {fileID: 661036270}
   wayfinding: {fileID: 1307339690}
+  rotationSpeed: 1
 --- !u!195 &1894798380
 NavMeshAgent:
   m_ObjectHideFlags: 0

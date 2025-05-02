@@ -41,7 +41,7 @@ public class AIManager : MonoBehaviour
 
 
     private const string API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
-    private const string API_KEY = "AIzaSyCmmPpM_7x6em730kAqSWdIExZOggZLx2I";
+    private const string API_KEY = "AIzaSyAfwHYTIMHPY4SWAqwRu25x0YIRgt_kiTU";
     private string scene_desc;
     public Queue<string> past_queries = new Queue<string>();
     private int maxSize = 5;
