@@ -22,7 +22,7 @@ namespace Samples.Whisper
         private bool isRecording;
         private float time;
         private List<string> microphoneDevices = new List<string>();
-        private OpenAIApi openai = new OpenAIApi("api key");
+        private OpenAIApi openai = new OpenAIApi("api-key");
 
         private void Start()
         {
