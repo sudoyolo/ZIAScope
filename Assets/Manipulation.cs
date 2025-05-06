@@ -8,12 +8,14 @@ using System.Text.RegularExpressions;
 public class Manipulation : MonoBehaviour
 {
     List<Action<string>> functionList;
+    [SerializeField] private List<GameObject> prefabList;
     public Selection selection;
     public List<Material> materialList = new List<Material>();
     public Wayfinding wayfinding;
     public SceneHierarchyParser parser;
     public ScrollingStringList scrollingList;
     public UndoRedoManager undoredo;
+    private int lastCreatedIdx = -1;
 
     // Start is called before the first frame update
     void Start()
@@ -35,8 +37,8 @@ public class Manipulation : MonoBehaviour
             wayfinding.clearPaths,                       // 11
             wayfinding.GoAlongPath,                      // 12
             wayfinding.TeleportToObj,                    // 13
-            undoredo.Undo,                               // 14
-            undoredo.Redo                                // 15
+            CreateObject,                                // 14
+            undoredo.Redo   // BROKEN DON'T TOUCH        // 15
         };
     }
 
@@ -44,6 +46,20 @@ public class Manipulation : MonoBehaviour
     {
         
     }
+
+    public string GetPrefabList()
+    {
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+
+        for (int i = 0; i < prefabList.Count; i++)
+        {
+            string name = prefabList[i] != null ? prefabList[i].name : "[Missing]";
+            sb.AppendLine($"{i}: {name}");
+        }
+
+        return sb.ToString();
+    }
+
 
     public void parseFunctions(string command)
     {
@@ -55,12 +71,10 @@ public class Manipulation : MonoBehaviour
         int i = 0;
         while (i < command.Length)
         {
-            // Skip whitespace
             while (i < command.Length && command[i] == ' ') { i++; }
             if (i >= command.Length)
                 break;
 
-            // Handle commands starting with '?'
             if (command[i] == '?')
             {
                 i++; // move past '?'
@@ -116,13 +130,13 @@ public class Manipulation : MonoBehaviour
             }
             string arg = command.Substring(argStart, i - argStart);
 
+            Debug.Log("waht is going on: " + functionList.Count);
             // Call the function
             if (funcIndex >= 0 && funcIndex < functionList.Count)
             {
                 if (funcIndex != 0 && (selection == null || selection.selectedObjects.Count == 0))
                 {
                     Debug.LogWarning("No previous selection exists, only manipulation applied.");
-                    // still continue parsing next functions!
                 }
                 functionList[funcIndex].Invoke(arg);
             }
@@ -231,13 +245,25 @@ public class Manipulation : MonoBehaviour
     {
         Debug.Log("change color to " + rgbString);
         
-        foreach(GameObject obj in selection.selectedObjects) {
+        foreach (GameObject obj in selection.selectedObjects) {
             string[] parts = rgbString.Split(';');
-            if (int.TryParse(parts[0], out int r) &&
-                int.TryParse(parts[1], out int g) &&
-                int.TryParse(parts[2], out int b))
+            if (parts.Length != 3) {
+                Debug.LogError("RGB string must have exactly 3 components separated by semicolons.");
+                continue;
+            }
+
+            if (float.TryParse(parts[0], out float r) &&
+                float.TryParse(parts[1], out float g) &&
+                float.TryParse(parts[2], out float b))
             {
-                Color color = new Color(r / 255f, g / 255f, b / 255f);
+                // If values appear to be in 0–255 range, normalize
+                if (r > 1f || g > 1f || b > 1f) {
+                    r /= 255f;
+                    g /= 255f;
+                    b /= 255f;
+                }
+
+                Color color = new Color(r, g, b);
 
                 Renderer rend = obj.GetComponent<Renderer>();
                 if (rend != null && rend.material != null)
@@ -251,11 +277,11 @@ public class Manipulation : MonoBehaviour
             }
             else
             {
-                Debug.LogError("Failed to parse RGB values.");
+                Debug.LogError("Failed to parse RGB values as floats.");
             }
         }
-       
     }
+
 
     public void ChangeMaterial(string arg)
     {
@@ -335,12 +361,58 @@ public class Manipulation : MonoBehaviour
 
     public void DeleteObject(string objname)
     {
-        Debug.Log("Selected objects count: " + selection.selectedObjects.Count);
         foreach(GameObject obj in selection.selectedObjects) {
             Destroy(obj);
             string buff = parser.ParseHierarchy();
 
         }
     }
+
+    public void CreateObject(string indexString)
+    {
+        if (!int.TryParse(indexString, out int index))
+        {
+            Debug.LogError($"Invalid index string: '{indexString}'");
+            return;
+        }
+
+        if (index < 0 || index >= prefabList.Count)
+        {
+            Debug.LogError($"Index {index} out of range (0 to {prefabList.Count - 1})");
+            return;
+        }
+
+        GameObject prefab = prefabList[index];
+        if (prefab == null)
+        {
+            Debug.LogError($"Prefab at index {index} is null.");
+            return;
+        }
+        float originalY = prefab.transform.position.y;
+        Vector3 newPosition = new Vector3(0f, originalY, 0f);
+        Quaternion newRotation = Quaternion.Euler(-90f, 0f, 0f);
+        GameObject instance = Instantiate(prefab, newPosition, newRotation);
+        //GameObject instance = Instantiate(prefab, newPosition, prefab.transform.rotation);
+        /*Quaternion currentRotation = instance.transform.rotation;
+        Quaternion additionalRotation = Quaternion.Euler(-90f, 0f, 0f);
+        instance.transform.rotation = currentRotation * additionalRotation;*/
+        instance.transform.localScale = new Vector3(
+            instance.transform.localScale.x * 0.7f,
+            instance.transform.localScale.y * 0.7f,
+            instance.transform.localScale.z * 0.7f
+        );
+
+        if(lastCreatedIdx==index){
+            Vector3 euler = instance.transform.eulerAngles;
+            euler.y -= 90f;  // or euler.y += 270f for same effect
+            instance.transform.eulerAngles = euler;
+        }
+        lastCreatedIdx = index;
+
+        instance.name = prefab.name + "_Clone";
+        instance.transform.parent = parser.sceneObjects.transform;
+    }
+
+
 
 }

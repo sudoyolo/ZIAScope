@@ -53,7 +53,7 @@ public class Selection : MonoBehaviour
                     originalLayers[obj] = obj.layer;
 
                     // Set to Highlight layer
-                    SetLayerRecursively(obj, highlightLayer);
+                    //SetLayerRecursively(obj, highlightLayer);
 
                     // Optional: change material
                     // ChangeMaterial(obj, selectedMat);

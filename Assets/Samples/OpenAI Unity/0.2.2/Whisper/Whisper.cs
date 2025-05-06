@@ -1,7 +1,7 @@
 ﻿using OpenAI;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Text;
+using System.Collections.Generic;
 using TMPro;
 
 namespace Samples.Whisper
@@ -11,73 +11,82 @@ namespace Samples.Whisper
         [SerializeField] private Button recordButton;
         [SerializeField] private Image progressBar;
         [SerializeField] private TextMeshProUGUI message;
-        [SerializeField] private Dropdown dropdown;
         [SerializeField] private AIManager aiManager;
+        private GlobalVariables globalVariables;
         public ScrollingStringList scrollingList;
+
         private readonly string fileName = "output.wav";
         private readonly int duration = 4;
-        
+
         private AudioClip clip;
         private bool isRecording;
         private float time;
-        private OpenAIApi openai = new OpenAIApi("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");
+        private List<string> microphoneDevices = new List<string>();
+        private OpenAIApi openai = new OpenAIApi("api key");
 
         private void Start()
         {
-            #if UNITY_WEBGL && !UNITY_EDITOR
-            dropdown.options.Add(new Dropdown.OptionData("Microphone not supported on WebGL"));
-            #else
+            globalVariables = FindObjectOfType<GlobalVariables>();
+#if UNITY_WEBGL && !UNITY_EDITOR
+            Debug.LogWarning("Microphone not supported on WebGL");
+#else
             foreach (var device in Microphone.devices)
             {
-                dropdown.options.Add(new Dropdown.OptionData(device));
+                microphoneDevices.Add(device);
             }
+
+            if (microphoneDevices.Count == 0)
+            {
+                Debug.LogError("No microphone devices found.");
+            }
+
             recordButton.onClick.AddListener(StartRecording);
-            dropdown.onValueChanged.AddListener(ChangeMicrophone);
-            
-            var index = PlayerPrefs.GetInt("user-mic-device-index");
-            dropdown.SetValueWithoutNotify(index);
-            #endif
+#endif
         }
 
-        private void ChangeMicrophone(int index)
-        {
-            PlayerPrefs.SetInt("user-mic-device-index", index);
-        }
-        
         private void StartRecording()
         {
             message.text = "...";
             isRecording = true;
             recordButton.enabled = false;
 
-            var index = PlayerPrefs.GetInt("user-mic-device-index");
-            
-            #if !UNITY_WEBGL
-            clip = Microphone.Start(dropdown.options[index].text, false, duration, 44100);
-            #endif
+#if !UNITY_WEBGL
+            //int index = globalVariables.microphoneIdx;
+            int index = 0;
+
+
+
+            if (index >= 0 && index < microphoneDevices.Count)
+            {
+                string selectedDevice = microphoneDevices[index];
+                clip = Microphone.Start(selectedDevice, false, duration, 44100);
+            }
+            else
+            {
+                Debug.LogError("Invalid microphone index: " + index);
+                isRecording = false;
+                recordButton.enabled = true;
+            }
+#endif
         }
 
         private async void EndRecording()
         {
-            //message.text = "Transcripting...";
-            
-            #if !UNITY_WEBGL
+#if !UNITY_WEBGL
             Microphone.End(null);
-            #endif
-            
+#endif
+
             byte[] data = SaveWav.Save(fileName, clip);
-            
+
             var req = new CreateAudioTranscriptionsRequest
             {
-                FileData = new FileData() {Data = data, Name = "audio.wav"},
-                // File = Application.persistentDataPath + "/" + fileName,
+                FileData = new FileData() { Data = data, Name = "audio.wav" },
                 Model = "whisper-1",
                 Language = "en"
             };
             var res = await openai.CreateAudioTranscription(req);
 
             progressBar.fillAmount = 0;
-            //message.text = res.Text;
             scrollingList.AddString(res.Text, "white");
             aiManager.GenerateAICommentary(res.Text);
             recordButton.enabled = true;
@@ -89,7 +98,7 @@ namespace Samples.Whisper
             {
                 time += Time.deltaTime;
                 progressBar.fillAmount = time / duration;
-                
+
                 if (time >= duration)
                 {
                     time = 0;

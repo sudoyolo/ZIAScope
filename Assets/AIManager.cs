@@ -43,6 +43,7 @@ public class AIManager : MonoBehaviour
     private const string API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
     private const string API_KEY = "AIzaSyAfwHYTIMHPY4SWAqwRu25x0YIRgt_kiTU";
     private string scene_desc;
+    private string prefabs_list;
     public Queue<string> past_queries = new Queue<string>();
     private int maxSize = 5;
 
@@ -57,6 +58,7 @@ public class AIManager : MonoBehaviour
         Push(arg1);
 
         scene_desc = parser.ParseHierarchy();
+        prefabs_list = manipulation.GetPrefabList();
         string prompt = $"A user gives you this prompt: {arg1}, check if the user wants to do any of the following functions: "; 
         prompt += "Reply with the relevant function index and its necessary arguments as a comma separated list. Do not include quotation marks or new lines anywhere. The functions are as follows:\n";
         
@@ -70,7 +72,7 @@ public class AIManager : MonoBehaviour
         prompt += "[4] Change color: User wants to change color of object (eg red, green, cyan, note that this is different to texture). Return 4 followed by a set of rgb values matching the color they say, eg. \'cyan\' returns \'75;201;197\'. Do not return name of color. Return 4 followed by the semicolon separated rgb values.\n";
         prompt += "[5] Change material: User wants to change the physical material of the object. Return one of the following options closest to what the user says: wood, steel, bronze, floorboards, fabric, ceramic, untextured, paintedwall. If none are close then return \'3 null\'\n";
         prompt += "[6] Assign tag: User wants to apply a tag to an object. Return the name of the tag as a string.\n";
-        prompt += "[7] Create duplicate: user wants to create a new duplicate object. Return \'empty\' in place of the args, eg. \'7 empty\'.\n";
+        prompt += "[7] Create duplicate: user wants to create a new duplicate object. Return \'empty\' in place of the args, eg. \'7 empty\'. This has to be an object that exists in the scene. If not, look through prefabs and call 14 creation instead.\n";
         prompt += "[8] Delete object: user wants to delete a selected object. Return \'empty\' in place of the args, eg. \'8 empty\'.\n";
         // WAYFINDING
         prompt += "[9] Show path between two locations: If user is one of the location objects, only include one argument. If only one object is specified in the query, then it is implied that the user is the other objects. e.g. the query \'route to fridge\' returns \'9 12\'. If user is not one of the location objects, return object indices of the relevant objects. \'9 23 62\'\n";
@@ -78,6 +80,10 @@ public class AIManager : MonoBehaviour
         prompt += "[11] Clear all existing paths: user wants to remove and stop showing all previous paths. Simply return \'11 clear paths\'\n";
         prompt += "[12] Move the user along the path to an object. Return the destination object index as an argument. Return \'12 35\'";
         prompt += "[13] Teleport to Object: Teleport the user to the location of an object. Pass the index of the object as the argument. E.g. \'13 25\' ";
+        // OBJECT CREATION
+        prompt += "[14] Create/add/generate an object: Look through the list of available objects in this list, if the user wants to generate a new object in this list, return just the function index and object's index, eg \'14 4\'. If no object match exists, respond with only \"?\"Sorry, the object you requested is not available.\"\"\n";
+        prompt += "If the user wants to generate multiple objects, eg \"create four new walls\" then respond with \"14 idx, 14 idx, 14 idx, 14 idx, ?\"Made four new walls\"\" replacing idx with actual index number. List of available objects:\n";
+        prompt += prefabs_list;
         // TWEAKS
         prompt += "For all functions except for Selection, if there is an implicit choice of object, eg. \'make chairs red\' then selection should be called before manipulating that object further. Often you will have to check prompt log to ensure you are selecting the correct object.\n";
         prompt += "Example, where chair is scene idx 1: \'Select the chair, change its color to red, move it back\' should return string \'0 1, 4 red, 1 backward 1, ?\"Made the chairs red and moved them backwards by one.\"\' \n";
@@ -102,8 +108,8 @@ public class AIManager : MonoBehaviour
         // ADDITIONAL INFO
         prompt += $"The user's position is {playerpos.position}. ";
         prompt += $"The entire game scene is described here {scene_desc}. ";
-        prompt += $"These are the past 10 prompts the user has used, take of previous ones building on top of current prompt if relevant, prioritize recent queries {ConcatenateQueue(past_queries)}. ";
-        prompt += "For example, if the previous query was \'Change the couches to red\' and the current query is \'Also do that to the table\' then understand these commands together.";
+        prompt += $"These are the past 5 prompts the user has used, take of previous ones building on top of current prompt if relevant, prioritize recent queries {ConcatenateQueue(past_queries)}. ";
+        prompt += "For example, if the previous query was \'Change the couches to red\' and the current query is \'Also do that to the table\' then understand these commands together, and change the table to red.";
         
         
         StartCoroutine(SendRequestToGemini(prompt));
