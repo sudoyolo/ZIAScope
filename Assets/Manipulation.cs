@@ -17,6 +17,7 @@ public class Manipulation : MonoBehaviour
     public ScrollingStringList scrollingList;
     public UndoRedoManager undoredo;
     public AIManager aiManager;
+    public LightingManager lightingManager;
     private int lastCreatedIdx = -1;
 
     // Start is called before the first frame update
@@ -41,7 +42,10 @@ public class Manipulation : MonoBehaviour
             wayfinding.TeleportToObj,                    // 13
             CreateObject,                                // 14
             undoredo.Undo,                               // 15
-            undoredo.Redo                                // 16
+            undoredo.Redo,                               // 16
+            lightingManager.SetEnvironment,              // 17
+            lightingManager.SetLightColorFromRGB,        // 18
+            lightingManager.ToggleAllLampChildren        // 19
         };
     }
 

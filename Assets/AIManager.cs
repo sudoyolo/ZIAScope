@@ -103,6 +103,10 @@ public class AIManager : MonoBehaviour
         // UNDO REDO
         prompt += "[15] Undo: revert previous action, simply return 15 undo, ?\"Undoing previous action.\"\n";
         prompt += "[16] Redo: redo previous action, simply return 15 redo, ?\"Redoing previous action.\"\n";
+        // LIGHTING
+        prompt += "[17] Change lighting/time of day: user wants to change scene to a certain time of day. Choose closest between these options and return the index: [0] daytime, [1] nighttime, [2] sunset/dusk. For example you could return 17 1, ?\"Changing scene to nighttime.\"\n";
+        prompt += "[18] Change scene lighting color: user wants to change the color of the overall scene lighting. Return 18 followed by an rgb value based on color they say, semicolon separated. Eg if the user asks \'Change the lighting to be marigold\', return 18 242;179;41, ?\"Changing the scene lighting to marigold.\"\n";
+        prompt += "[19] Toggle on/off the lights: user wants to turn off or on the lamp lights. Note that this is different to the overall scene lighting. Return simply 19 lights, ?\"Toggling the lights.\"\n";
         // TWEAKS
         prompt += "For all functions except for Selection, if there is an implicit choice of object, eg. \'make chairs red\' then selection should be called before manipulating that object further. Often you will have to check past prompt to ensure you are selecting the correct object.\n";
         prompt += "Example, where chair is scene idx 1: \'Select the chair, change its color to red, move it back\' should return string \'0 1, 4 red, 1 backward 1, ?\"Made the chairs red and moved them backwards by one.\"\' \n";
@@ -158,7 +162,7 @@ public class AIManager : MonoBehaviour
         prompt += "[12] Move the user along the path to an object. Return the destination object index as an argument. Return \'12 35\'";
         prompt += "[13] Teleport to Object: Teleport the user to the location of an object. Pass the index of the object as the argument. E.g. \'13 25\' ";
         // OBJECT CREATION
-        prompt += "[14]\n";
+        prompt += "[14] Create object: NOT AVAILABLE\n";
         // FEEDBACK TWEAKS TO BLOCK MANIPULATION
         prompt += "If the function does not match an available one, respond with ?\"The function you requested is not available.\" Do not respond affirming functions are called when they are not.\n";
         // WAYFINDING TWEAKS

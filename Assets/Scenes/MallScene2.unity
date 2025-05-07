@@ -337,7 +337,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a1e30841749a4e53ac041eef915577d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneObjects: {fileID: 1576594872}
   parser: {fileID: 1326424308}
   playerPos: {fileID: 1979865489}
   selectedMat: {fileID: 2100000, guid: 5f9bdce2d551740c59e7473889dab0cd, type: 2}
@@ -1166,8 +1165,8 @@ MonoBehaviour:
   teleportationProvider: {fileID: 1091361276}
   moveProvider: {fileID: 1091361275}
   snapTurnProvider: {fileID: 1091361273}
-  selection: {fileID: 0}
-  wayfinding: {fileID: 0}
+  selection: {fileID: 12791678}
+  wayfinding: {fileID: 1445298197}
   rotationSpeed: 1
 --- !u!195 &334119004
 NavMeshAgent:
@@ -2490,7 +2489,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8567be94742e442c1a965a3866e14418, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  manipulation: {fileID: 946936847}
+  targetObject: {fileID: 0}
+  scrollingList: {fileID: 0}
+  parser: {fileID: 0}
+  select: {fileID: 0}
 --- !u!4 &543268506
 Transform:
   m_ObjectHideFlags: 0
@@ -4804,6 +4806,7 @@ MonoBehaviour:
   scrollingList: {fileID: 79396111}
   undoredo: {fileID: 543268505}
   aiManager: {fileID: 0}
+  lightingManager: {fileID: 0}
 --- !u!4 &946936848
 Transform:
   m_ObjectHideFlags: 0
@@ -6866,7 +6869,7 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.33333334
+  m_VoxelSize: 0.033333335
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: 7b24bf631b8154b779951a482356e8e6, type: 2}
   m_BuildHeightMesh: 0
