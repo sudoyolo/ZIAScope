@@ -8,6 +8,7 @@ public class ScrollingStringList : MonoBehaviour
     public Transform contentPanel; // Content panel of the scroll view
     public GameObject stringPrefab; // Prefab for each string entry (e.g., TextMeshProUGUI)
     public ScrollRect scrollRect;
+    private string lastString = "";
     private Queue<(string, string)> stringQueue = new Queue<(string, string)>(); // Store both text and color
     private const int maxStrings = 10;
 
@@ -22,6 +23,10 @@ public class ScrollingStringList : MonoBehaviour
 
     public void AddString(string newString, string color = "default")
     {
+        // catch and do not print if undo/redo is blocked
+        if(newString.Contains("Redoing") && lastString.Contains("available")){return;}
+        if(newString.Contains("Undoing") && lastString.Contains("available")){return;}
+
         // Add the new string and its color to the queue
         if (stringQueue.Count >= maxStrings)
         {

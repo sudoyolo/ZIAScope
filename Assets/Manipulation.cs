@@ -5,6 +5,7 @@ using System;
 using System.Text.RegularExpressions;
 
 
+
 public class Manipulation : MonoBehaviour
 {
     List<Action<string>> functionList;
@@ -15,6 +16,7 @@ public class Manipulation : MonoBehaviour
     public SceneHierarchyParser parser;
     public ScrollingStringList scrollingList;
     public UndoRedoManager undoredo;
+    public AIManager aiManager;
     private int lastCreatedIdx = -1;
 
     // Start is called before the first frame update
@@ -38,7 +40,8 @@ public class Manipulation : MonoBehaviour
             wayfinding.GoAlongPath,                      // 12
             wayfinding.TeleportToObj,                    // 13
             CreateObject,                                // 14
-            undoredo.Redo   // BROKEN DON'T TOUCH        // 15
+            undoredo.Undo,                               // 15
+            undoredo.Redo                                // 16
         };
     }
 
@@ -123,6 +126,11 @@ public class Manipulation : MonoBehaviour
                 break;
             }
 
+            if(funcIndex<=8 && funcIndex > 0)
+            {
+                undoredo.LogState();
+            }
+
             int argStart = i;
             while (i < command.Length && command[i] != ',')
             {
@@ -130,7 +138,6 @@ public class Manipulation : MonoBehaviour
             }
             string arg = command.Substring(argStart, i - argStart);
 
-            Debug.Log("waht is going on: " + functionList.Count);
             // Call the function
             if (funcIndex >= 0 && funcIndex < functionList.Count)
             {
@@ -389,7 +396,7 @@ public class Manipulation : MonoBehaviour
             return;
         }
         float originalY = prefab.transform.position.y;
-        Vector3 newPosition = new Vector3(0f, originalY, 0f);
+        Vector3 newPosition = new Vector3(aiManager.playerpos.position.x, originalY, aiManager.playerpos.position.z);
         Quaternion newRotation = Quaternion.Euler(-90f, 0f, 0f);
         GameObject instance = Instantiate(prefab, newPosition, newRotation);
         //GameObject instance = Instantiate(prefab, newPosition, prefab.transform.rotation);

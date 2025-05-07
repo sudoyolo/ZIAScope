@@ -92,6 +92,11 @@ public class SceneHierarchyParser : MonoBehaviour
         return sb.ToString();
     }
 
+    public void setTargetObject(GameObject obj)
+    {
+        sceneObjects = obj;
+    }
+
 
     public static int GetIntegerDistance(Transform a, Transform b)
     {

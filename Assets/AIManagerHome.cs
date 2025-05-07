@@ -28,7 +28,7 @@ public class AIManagerHome : MonoBehaviour
         prompt += "This is the user's prompt: ";
         prompt += arg1;
         prompt += "Choose the one closest to what the user asks for, and respond with its index, followed by a message confirming the choice. ";
-        prompt += "For example, if the user says \"choose the shopping mall\", you can return \"1 Default Navigation: Shopping Mall scene chosen.\"";
+        prompt += "For example, if the user says \"choose the living room\", you can return \"1 Default Interior Design: Living Room chosen. Loading...\"";
         prompt += "If it is impossible to tell what the user wants, or if they made an irrelevant prompt, return \"Choice was unclear, please try again.\"";
         prompt += "Return in the format of my examples, and only that. Messages should be very short.";
 

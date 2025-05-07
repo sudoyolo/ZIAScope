@@ -5,6 +5,8 @@ using TMPro;
 using System.Text;
 using System;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
+
 
 [System.Serializable]
 public class GeminiPart
@@ -59,8 +61,22 @@ public class AIManager : MonoBehaviour
 
         scene_desc = parser.ParseHierarchy();
         prefabs_list = manipulation.GetPrefabList();
+        string prompt;
+        int currentIndex = UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex;
+        if (currentIndex == 2)
+        {
+            prompt = getNavigationString(arg1);
+        } else {
+            prompt = getManipulationString(arg1);
+        }
+        
+        StartCoroutine(SendRequestToGemini(prompt));
+    }
+
+    private string getManipulationString(string arg1) 
+    {
         string prompt = $"A user gives you this prompt: {arg1}, check if the user wants to do any of the following functions: "; 
-        prompt += "Reply with the relevant function index and its necessary arguments as a comma separated list. Do not include quotation marks or new lines anywhere. The functions are as follows:\n";
+        prompt += "Reply with the relevant function index and its necessary arguments as a comma separated list. Do not include new lines anywhere. The functions are as follows:\n";
         
         // SELECTION
         prompt += "[0] Selection: User wants to select something. Pick the object that matches what they ask for, return its index and only its index. If no clear match exists, prompt for more clarity, prompts should start with a ? and be quotation encapsulated. When users say \'Everything\' they mean every object. ";
@@ -84,16 +100,19 @@ public class AIManager : MonoBehaviour
         prompt += "[14] Create/add/generate an object: Look through the list of available objects in this list, if the user wants to generate a new object in this list, return just the function index and object's index, eg \'14 4\'. If no object match exists, respond with only \"?\"Sorry, the object you requested is not available.\"\"\n";
         prompt += "If the user wants to generate multiple objects, eg \"create four new walls\" then respond with \"14 idx, 14 idx, 14 idx, 14 idx, ?\"Made four new walls\"\" replacing idx with actual index number. List of available objects:\n";
         prompt += prefabs_list;
+        // UNDO REDO
+        prompt += "[15] Undo: revert previous action, simply return 15 undo, ?\"Undoing previous action.\"\n";
+        prompt += "[16] Redo: redo previous action, simply return 15 redo, ?\"Redoing previous action.\"\n";
         // TWEAKS
-        prompt += "For all functions except for Selection, if there is an implicit choice of object, eg. \'make chairs red\' then selection should be called before manipulating that object further. Often you will have to check prompt log to ensure you are selecting the correct object.\n";
+        prompt += "For all functions except for Selection, if there is an implicit choice of object, eg. \'make chairs red\' then selection should be called before manipulating that object further. Often you will have to check past prompt to ensure you are selecting the correct object.\n";
         prompt += "Example, where chair is scene idx 1: \'Select the chair, change its color to red, move it back\' should return string \'0 1, 4 red, 1 backward 1, ?\"Made the chairs red and moved them backwards by one.\"\' \n";
         prompt += "Another example, where entire scene is couches with idx 0 1: \'Move everything forward and tag them as new\' should return string \'0 0 1, 1 forward 1, 6 new,?\"Every object moved foward and tagged as new\"\' \n";
+        // NAVIGATION TWEAKS
         prompt += "For functions involving paths and teleportation, call selection on relevant objects prior to calling the relevant Path command. Paths involving the user should have one selected object. Paths not including the user should have two selected objects. \n";
         prompt += "An example, the fridge idx is 63: \'Take me to the fridge\' should return \'0 63, 9 63\'\n";
         prompt += "Another example, the fridge idx is 63 and the couch idx is 25: \'Show me the shortest route between the couch and the fridge\' should return \'0 63 25, 9 63 25\'\n";
         prompt += "A query such as \'Show path to fridge\' or \'Delete path to fridge\' assumes the user as one of the location objects for the path and thus only returns one argument.\n";
-        prompt +=
-            "If the user query relates to showing or illustrating a path, choose function 9 as the target function to return. If a user query relates to moving or travelling along a path, choose function 12 as the target function to return. Call selection prior to both of these functions, e.g. \'0 25, 9 25\' or \'0 36, 12 36\' where 25 and 36 are the destination object indices. \n";
+        prompt += "If the user query relates to showing or illustrating a path, choose function 9 as the target function to return. If a user query relates to moving or travelling along a path, choose function 12 as the target function to return. Call selection prior to both of these functions, e.g. \'0 25, 9 25\' or \'0 36, 12 36\' where 25 and 36 are the destination object indices. \n";
         prompt += "Similarly, for deleting a single path, if the query includes the user as an object for the path, only include one argument in the selection. e.g. \'Delete the route to the couch\' when the couch idx is 25 should be \'0 25, 10 25\'\n";
         prompt += "If the route doesn't include the user as an object for the path, there should be two arguments for each of the corresponding objects in the selection. e.g. \'Delete the route between the couch and the fridge\', then if the couch index is 63 and the fridge index is 25, return \'0 63 25, 10 63 25\'\n";
         prompt += "For teleportation, selection should also be called on the destination object prior to the teleportation function call, e.g. \'0 25, 13 25\' where 25 is the destination object. ";
@@ -110,9 +129,60 @@ public class AIManager : MonoBehaviour
         prompt += $"The entire game scene is described here {scene_desc}. ";
         prompt += $"These are the past 5 prompts the user has used, take of previous ones building on top of current prompt if relevant, prioritize recent queries {ConcatenateQueue(past_queries)}. ";
         prompt += "For example, if the previous query was \'Change the couches to red\' and the current query is \'Also do that to the table\' then understand these commands together, and change the table to red.";
+        return prompt;
+    }
+
+    private string getNavigationString(string arg1)
+    {
+        string prompt = $"A user gives you this prompt: {arg1}, check if the user wants to do any of the following functions: "; 
+        prompt += "Reply with the relevant function index and its necessary arguments as a comma separated list. Do not include new lines anywhere.\n";
+        prompt += "Some of the functions are unavailable to correctly index the available functions. Do not choose these unavailable numbers. Choose the numbers that do correspond to available functions";
+        prompt += "The functions are as follows:\n";
         
-        
-        StartCoroutine(SendRequestToGemini(prompt));
+        // SELECTION
+        prompt += "[0] Selection: User wants to select something. Pick the object that matches what they ask for, return its index and only its index. If no clear match exists, prompt for more clarity, prompts should start with a ? and be quotation encapsulated. When users say \'Everything\' they mean every object. ";
+
+        // ALL MANIPULATION FUNCTIONS DISABLED
+        prompt += "[1] Change position: NOT AVAILABLE\n";
+        prompt += "[2] Set position: NOT AVAILABLE\n";        
+        prompt += "[3] Rotate object: NOT AVAILABLE\n";
+        prompt += "[4] Change color: NOT AVAILABLE\n";
+        prompt += "[5] Change material: NOT AVAILABLE\n";
+        prompt += "[6] Assign tag: NOT AVAILABLE\n";
+        prompt += "[7] Create duplicate: NOT AVAILABLE\n";
+        prompt += "[8] Delete object: NOT AVAILABLE\n";
+        // WAYFINDING
+        prompt += "[9] Show path between two locations: If user is one of the location objects, only include one argument. If only one object is specified in the query, then it is implied that the user is the other objects. e.g. the query \'route to fridge\' returns \'9 12\'. If user is not one of the location objects, return object indices of the relevant objects. \'9 23 62\'\n";
+        prompt += "[10] Clear single path: user wants to remove a single path. Return only one argument if the path is between the user and an object. e.g. \'10 63\'. Return two arguments if the path is between two objects that don't include the user \'10 23 64\'\n";
+        prompt += "[11] Clear all existing paths: user wants to remove and stop showing all previous paths. Simply return \'11 clear paths\'\n";
+        prompt += "[12] Move the user along the path to an object. Return the destination object index as an argument. Return \'12 35\'";
+        prompt += "[13] Teleport to Object: Teleport the user to the location of an object. Pass the index of the object as the argument. E.g. \'13 25\' ";
+        // OBJECT CREATION
+        prompt += "[14]\n";
+        // FEEDBACK TWEAKS TO BLOCK MANIPULATION
+        prompt += "If the function does not match an available one, respond with ?\"The function you requested is not available.\" Do not respond affirming functions are called when they are not.\n";
+        // WAYFINDING TWEAKS
+        prompt += "For functions involving paths and teleportation, call selection on relevant objects prior to calling the relevant Path command. Paths involving the user should have one selected object. Paths not including the user should have two selected objects. \n";
+        prompt += "An example, the fridge idx is 63: \'Take me to the fridge\' should return \'0 63, 9 63\'\n";
+        prompt += "Another example, the fridge idx is 63 and the couch idx is 25: \'Show me the shortest route between the couch and the fridge\' should return \'0 63 25, 9 63 25\'\n";
+        prompt += "A query such as \'Show path to fridge\' or \'Delete path to fridge\' assumes the user as one of the location objects for the path and thus only returns one argument.\n";
+        prompt += "If the user query relates to showing or illustrating a path, choose function 9 as the target function to return. If a user query relates to moving or travelling along a path, choose function 12 as the target function to return. Call selection prior to both of these functions, e.g. \'0 25, 9 25\' or \'0 36, 12 36\' where 25 and 36 are the destination object indices. \n";
+        prompt += "Similarly, for deleting a single path, if the query includes the user as an object for the path, only include one argument in the selection. e.g. \'Delete the route to the couch\' when the couch idx is 25 should be \'0 25, 10 25\'\n";
+        prompt += "If the route doesn't include the user as an object for the path, there should be two arguments for each of the corresponding objects in the selection. e.g. \'Delete the route between the couch and the fridge\', then if the couch index is 63 and the fridge index is 25, return \'0 63 25, 10 63 25\'\n";
+        prompt += "For teleportation, selection should also be called on the destination object prior to the teleportation function call, e.g. \'0 25, 13 25\' where 25 is the destination object. ";
+        // FEEDBACK
+        prompt += "For every command, make sure to also provide short feedback note explaining what you understood, in the format of a ? followed by text enclosed in quotation marks.\n";
+        prompt += "For example, an entire command string could be 0 23 64, 10 23 64, ?\"Removing the path between the exit and the bathroom.\"\n";
+        // FURTHER PROMPTING
+        prompt += "If the user's input is unclear, \'?\' followed by a message can also be used to ask for more confirmation. This message should be encapsulated in quotation marks, e.g. ? \"Please repeat what you said.\"\n";
+        prompt += "For example, if they ask to select something that is not in the scene, return something like \'? \"Sorry, I couldn't understand which object you meant, try again?\"\'";
+        prompt += "Another example, if it is unclear which specific object is being referred to, such as \'Select that chair\', you can ask ?\"Which chair? The one closer to the door or to yourself?\"\n";
+        prompt += "Do not be afraid to prompt for clarity, it is better to ask and be sure than to do something the user does not want. Especially for spatial queries. Avoid using numbers, especially object indexes. Do not ask for rgb values.\n";
+        // ADDITIONAL INFO
+        prompt += $"The user's position is {playerpos.position}. ";
+        prompt += $"The entire game scene is described here {scene_desc}. ";
+        prompt += $"These are the past 5 prompts the user has used, take of previous ones building on top of current prompt if relevant, prioritize recent queries {ConcatenateQueue(past_queries)}. ";
+        return prompt;
     }
 
     private IEnumerator SendRequestToGemini(string prompt)

@@ -5,7 +5,6 @@ using System;
 public class Selection : MonoBehaviour
 {
     [Header("Scene Configuration")]
-    public GameObject sceneObjects;
     public SceneHierarchyParser parser;
 
     [Header("Player and Visual Feedback")]
