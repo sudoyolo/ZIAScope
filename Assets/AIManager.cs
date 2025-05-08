@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
 
+
 [System.Serializable]
 public class GeminiPart
 {
@@ -35,6 +36,8 @@ public class GeminiResponse
 public class AIManager : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI aiCommentaryText;
+    [SerializeField] private UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor leftRayInteractor;
+    [SerializeField] private UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor rightRayInteractor;
     public SceneHierarchyParser parser;
     public Selection selection;
     public Manipulation manipulation;
@@ -53,6 +56,25 @@ public class AIManager : MonoBehaviour
     {
         parser = FindObjectOfType<SceneHierarchyParser>();
         scene_desc = parser.result;
+    }
+    
+    void Update()
+    {
+        CheckRayHit(leftRayInteractor, "Left");
+        CheckRayHit(rightRayInteractor, "Right");
+    }
+    
+    void CheckRayHit(UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor rayInteractor, string handLabel)
+    {
+        if (rayInteractor != null && rayInteractor.TryGetCurrent3DRaycastHit(out RaycastHit hit))
+        {
+            Debug.Log($"{handLabel} controller hit: {hit.collider.gameObject.name}");
+        }
+        else
+        {
+            Debug.Log($"Hitting nothing right now");
+        }
+        
     }
 
     public void GenerateAICommentary(string arg1)
