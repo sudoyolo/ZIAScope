@@ -46,6 +46,11 @@ public class PathManager : MonoBehaviour
         pathObjects.Add(pathObj);
     }
 
+    public GameObject GetNavPath(int id1, int id2)
+    {
+        return objectPaths[Tuple.Create(id1, id2)];
+    }
+
     /// <summary>
     /// Clears all existing paths.
     /// </summary>
@@ -77,3 +82,5 @@ public class PathManager : MonoBehaviour
         pathCount -= 1;
     }
 }
+
+

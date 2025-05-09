@@ -22,7 +22,7 @@ namespace Samples.Whisper
         private bool isRecording;
         private float time;
         private List<string> microphoneDevices = new List<string>();
-        private OpenAIApi openai = new OpenAIApi("api-key");
+        private OpenAIApi openai = new OpenAIApi("api key");
 
         private void Start()
         {
@@ -52,7 +52,7 @@ namespace Samples.Whisper
 
 #if !UNITY_WEBGL
             //int index = globalVariables.microphoneIdx;
-            int index = 0;
+            int index = 1;
 
 
 

@@ -7,15 +7,17 @@ public class SingleNavPath : MonoBehaviour
 {
     public Transform start;
     public Transform end;
-    private NavMeshPath path;
+    public NavMeshPath path;
     public LineRenderer lineRenderer;
     private float lastUpdateTime;
     private float updateInterval;
+    public bool shouldUpdate;
     void Start()
     {
         lastUpdateTime = Time.time;
         updateInterval = 0.1f;
         path = new NavMeshPath();
+        shouldUpdate = true;
     }
 
     void Update()
@@ -28,7 +30,12 @@ public class SingleNavPath : MonoBehaviour
             {
                 print("navmesh can't be found.");
             }
-            NavMesh.CalculatePath(hit1.position, hit2.position, NavMesh.AllAreas, path);
+
+            if (shouldUpdate)
+            {
+                NavMesh.CalculatePath(hit1.position, hit2.position, NavMesh.AllAreas, path);
+            }
+
             if (lineRenderer is not null && path is not null)
             {
                 lineRenderer.positionCount = path.corners.Length;
@@ -44,8 +51,8 @@ public class SingleNavPath : MonoBehaviour
         }
        
     }
-
+    public NavMeshPath GetPath()
+    {
+        return path;
+    }
 }
-
-
-

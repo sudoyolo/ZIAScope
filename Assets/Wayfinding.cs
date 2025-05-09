@@ -53,10 +53,8 @@ public class Wayfinding : MonoBehaviour
         illuminatePathBetweenDestinations(input);
         if (selection.selectedObjects.Count == 1)
         {
-            NavMesh.SamplePosition(selection.selectedObjects[0].transform.position, out NavMeshHit hit1, 5f, NavMesh.AllAreas);
-            xrOrigin.startTravelling(hit1.position, selection.selectedObjects[0].GetInstanceID());
+            xrOrigin.startTravelling( selection.selectedObjects[0].GetInstanceID());
         }
-
     }
     public void TeleportToObj(String input)
     {
