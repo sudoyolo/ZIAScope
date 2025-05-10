@@ -24,8 +24,8 @@ public class SingleNavPath : MonoBehaviour
     {
         if (Time.time - lastUpdateTime >= updateInterval)
         {
-            bool firstHitBool = NavMesh.SamplePosition(start.position, out NavMeshHit hit1, 5f, NavMesh.AllAreas);
-            bool secondHitBool = NavMesh.SamplePosition(end.position, out NavMeshHit hit2, 5f, NavMesh.AllAreas);
+            bool firstHitBool = NavMesh.SamplePosition(start.position, out NavMeshHit hit1, 100f, NavMesh.AllAreas);
+            bool secondHitBool = NavMesh.SamplePosition(end.position, out NavMeshHit hit2, 100f, NavMesh.AllAreas);
             if (!firstHitBool || !secondHitBool)
             {
                 print("navmesh can't be found.");

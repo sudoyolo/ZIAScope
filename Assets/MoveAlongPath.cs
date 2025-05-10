@@ -98,7 +98,7 @@ public class MoveAlongPath : LocomotionProvider
                     //Quaternion lookRotation = Quaternion.LookRotation(vecToCorner);
                     //transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 0.25f);
                 }
-                if (currentCornerIndex == path.corners.Length || (currentCornerIndex == path.corners.Length-1 && Vector3.Distance(transform.position,xrOriginDestination)<1) )
+                if (currentCornerIndex == path.corners.Length /*|| (currentCornerIndex == path.corners.Length-1 && Vector3.Distance(transform.position,xrOriginDestination)<1)*/ )
                 {
                     //reached destination 
                     travelling = false;
