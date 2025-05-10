@@ -1,0 +1,173 @@
+using UnityEngine;
+using UnityEngine.Networking;
+using TMPro;
+using System.Collections;
+using System.Text;
+using System.Collections.Generic;
+using System;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Linq;
+
+public class ComputerVision : MonoBehaviour
+{
+    [Header("UI")]
+    public GameObject xrDeviceSimulatorObject; // Assign the XR Device Simulator
+    private MonoBehaviour xrSimulatorComponent;
+
+    public TMP_InputField promptInput;
+    public TextMeshProUGUI responseText;
+
+    [Header("Camera")]
+    public Camera captureCamera; // Assign XR Origin Camera in Inspector
+
+    [Header("API Settings")]
+    private string replicateUrl = "https://api.replicate.com/v1/predictions";
+    private string replicateToken = ""; // 🔐 Replace with your actual token
+    private string llavaModelVersion = "80537f9eead1a5bfa72d5ac6ea6414379be41d4d4f6679fd776e9535d1eb58bb"; // LLaVA 13B
+
+    void Start()
+    {
+        xrSimulatorComponent = xrDeviceSimulatorObject.GetComponent<MonoBehaviour>();
+
+        promptInput.onSelect.AddListener(_ => ToggleXR(false));
+        promptInput.onDeselect.AddListener(_ => ToggleXR(true));
+        promptInput.onSubmit.AddListener(OnPromptSubmitted);
+    }
+
+    void ToggleXR(bool enabled)
+    {
+        if (xrSimulatorComponent != null)
+            xrSimulatorComponent.enabled = enabled;
+    }
+
+    void OnPromptSubmitted(string text)
+    {
+        StartCoroutine(SendImageWithPromptToReplicate(text));
+    }
+
+    IEnumerator SendImageWithPromptToReplicate(string prompt)
+    {
+        // Capture full screen from XR camera
+        int width = Screen.width;
+        int height = Screen.height;
+        RenderTexture rt = new RenderTexture(width, height, 24);
+        Texture2D photo = new Texture2D(width, height, TextureFormat.RGB24, false);
+
+        captureCamera.targetTexture = rt;
+        captureCamera.Render();
+        RenderTexture.active = rt;
+        photo.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+        photo.Apply();
+        captureCamera.targetTexture = null;
+        RenderTexture.active = null;
+        Destroy(rt);
+
+        byte[] imageBytes = photo.EncodeToJPG();
+        string imageBase64 = Convert.ToBase64String(imageBytes);
+        string imageDataUrl = $"data:image/jpeg;base64,{imageBase64}";
+
+        // Create JSON payload
+        var requestJson = new
+        {
+            version = llavaModelVersion,
+            input = new Dictionary<string, string>
+            {
+                { "image", imageDataUrl },
+                { "prompt", prompt }
+            }
+        };
+
+        // string jsonString = JsonUtility.ToJson(new Wrapper<object> { value = requestJson });
+
+        UnityWebRequest request = new UnityWebRequest(replicateUrl, "POST");
+        // byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonString.Replace("\"value\":", "").TrimStart('{').TrimEnd('}'));
+
+        string jsonString = JsonConvert.SerializeObject(new
+        {
+            version = llavaModelVersion,
+            input = new Dictionary<string, string>
+            {
+                { "image", imageDataUrl },
+                { "prompt", prompt }
+            }
+        });
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonString);
+
+        request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Authorization", "Token " + replicateToken);
+        request.SetRequestHeader("Content-Type", "application/json");
+
+        yield return request.SendWebRequest();
+
+        if (request.result != UnityWebRequest.Result.Success)
+        {
+            Debug.LogError("Request error: " + request.error);
+            responseText.text = "API request failed: " + request.error;
+            yield break;
+        }
+
+        string pollUrl = GetPollUrl(request.downloadHandler.text);
+
+        // Poll the prediction result
+        while (true)
+        {
+            UnityWebRequest poll = UnityWebRequest.Get(pollUrl);
+            poll.SetRequestHeader("Authorization", "Token " + replicateToken);
+            yield return poll.SendWebRequest();
+
+            if (poll.result != UnityWebRequest.Result.Success)
+            {
+                responseText.text = "Polling failed: " + poll.error;
+                yield break;
+            }
+
+            var resultJson = poll.downloadHandler.text;
+            if (resultJson.Contains("\"status\":\"succeeded\""))
+            {
+                string output = ExtractOutputFromJson(resultJson);
+                responseText.text = output;
+                yield break;
+            }
+            else if (resultJson.Contains("\"status\":\"failed\""))
+            {
+                responseText.text = "Prediction failed.";
+                yield break;
+            }
+
+            yield return new WaitForSeconds(1f); // wait before polling again
+        }
+    }
+
+    // Helper class to wrap anonymous objects for JsonUtility
+    [Serializable]
+    private class Wrapper<T>
+    {
+        public T value;
+    }
+
+    // Extract poll URL
+    private string GetPollUrl(string json)
+    {
+        int start = json.IndexOf("\"get\":\"") + 7;
+        int end = json.IndexOf("\"", start);
+        return json.Substring(start, end - start).Replace("\\/", "/");
+    }
+
+    // Extract final output
+    string ExtractOutputFromJson(string json)
+    {
+        try
+        {
+            JObject parsed = JObject.Parse(json);
+            JArray outputArray = (JArray)parsed["output"];
+            return string.Join(" ", outputArray.Select(token => token.ToString()));
+        }
+        catch
+        {
+            return "Failed to parse model output.";
+        }
+    }
+
+}
