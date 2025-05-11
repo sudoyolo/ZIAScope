@@ -8,36 +8,14 @@ public class MinimapToggle : MonoBehaviour
     public GameObject minimap;
     private PlayerInputActions inputActions;
     
-    void Awake()
+    void Start()
     {
-        inputActions = new PlayerInputActions();
+        inputActions = InputManager.inputActions;
         inputActions.Gameplay.ToggleMinimap.performed += ToggleMinimap;
     }
-
-    void OnEnable()
-    {
-        inputActions.Enable();
-    }
-
-    void OnDisable()
-    {
-        inputActions.Disable();
-    }
-
+    
     private void ToggleMinimap(InputAction.CallbackContext context)
     {
         minimap.SetActive(!minimap.activeSelf);
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

@@ -29,9 +29,23 @@ public class MoveAlongPath : LocomotionProvider
     private int currentCornerIndex;
     private float moveDistance = 1f;
     public bool locomotionEnabled;
+    private PlayerInputActions inputActions;
     void Start()
     {
+        inputActions = InputManager.inputActions;
+        inputActions.Gameplay.StopMoving.performed += StopMoving;
         travelling = false;
+    }
+    private void StopMoving(InputAction.CallbackContext context)
+    {
+        if (travelling && locomotionEnabled)
+        {
+            travelling = false;
+            path = null;
+            wayfinding.clearSinglePath("ClearPathCalledFromNavMesh "+ gameObjectId);
+            TryEndLocomotion();
+        }
+        
     }
 
     public void startTravelling( int gameObjectId)
@@ -111,4 +125,5 @@ public class MoveAlongPath : LocomotionProvider
     }
     
 }
+
 

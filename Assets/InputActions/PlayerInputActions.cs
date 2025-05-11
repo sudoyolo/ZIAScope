@@ -35,6 +35,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Tap"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""StopMoving"",
+                    ""type"": ""Button"",
+                    ""id"": ""6c7abf7e-1bd2-4d84-be4a-bc9dadebf340"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -48,6 +57,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""ToggleMinimap"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""edec3265-213a-4479-b220-93718ab958f9"",
+                    ""path"": ""<XRController>{RightHand}/{TriggerButton}"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""StopMoving"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -57,6 +77,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         // Gameplay
         m_Gameplay = asset.FindActionMap("Gameplay", throwIfNotFound: true);
         m_Gameplay_ToggleMinimap = m_Gameplay.FindAction("ToggleMinimap", throwIfNotFound: true);
+        m_Gameplay_StopMoving = m_Gameplay.FindAction("StopMoving", throwIfNotFound: true);
     }
 
     ~@PlayerInputActions()
@@ -124,11 +145,13 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Gameplay;
     private List<IGameplayActions> m_GameplayActionsCallbackInterfaces = new List<IGameplayActions>();
     private readonly InputAction m_Gameplay_ToggleMinimap;
+    private readonly InputAction m_Gameplay_StopMoving;
     public struct GameplayActions
     {
         private @PlayerInputActions m_Wrapper;
         public GameplayActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @ToggleMinimap => m_Wrapper.m_Gameplay_ToggleMinimap;
+        public InputAction @StopMoving => m_Wrapper.m_Gameplay_StopMoving;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -141,6 +164,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @ToggleMinimap.started += instance.OnToggleMinimap;
             @ToggleMinimap.performed += instance.OnToggleMinimap;
             @ToggleMinimap.canceled += instance.OnToggleMinimap;
+            @StopMoving.started += instance.OnStopMoving;
+            @StopMoving.performed += instance.OnStopMoving;
+            @StopMoving.canceled += instance.OnStopMoving;
         }
 
         private void UnregisterCallbacks(IGameplayActions instance)
@@ -148,6 +174,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @ToggleMinimap.started -= instance.OnToggleMinimap;
             @ToggleMinimap.performed -= instance.OnToggleMinimap;
             @ToggleMinimap.canceled -= instance.OnToggleMinimap;
+            @StopMoving.started -= instance.OnStopMoving;
+            @StopMoving.performed -= instance.OnStopMoving;
+            @StopMoving.canceled -= instance.OnStopMoving;
         }
 
         public void RemoveCallbacks(IGameplayActions instance)
@@ -168,5 +197,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     public interface IGameplayActions
     {
         void OnToggleMinimap(InputAction.CallbackContext context);
+        void OnStopMoving(InputAction.CallbackContext context);
     }
 }
