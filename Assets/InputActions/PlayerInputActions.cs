@@ -44,6 +44,33 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""moveFasterMoveAlongPath"",
+                    ""type"": ""Button"",
+                    ""id"": ""90c97d3b-415b-470d-abc7-083abc892532"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""moveSlowerMoveAlongPath"",
+                    ""type"": ""Button"",
+                    ""id"": ""fb5101a5-3e84-4640-8cdf-aae7692d9afc"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ToggleRecording"",
+                    ""type"": ""Button"",
+                    ""id"": ""5cce8cb0-9fc3-4bd6-af32-4d3185f09dc1"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -68,6 +95,39 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""StopMoving"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bfb05e01-3deb-4115-a940-b1301154416c"",
+                    ""path"": ""<XRController>{LeftHand}/{PrimaryButton}"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""moveFasterMoveAlongPath"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d0aa7207-dee1-4d58-a534-f15bec8163d7"",
+                    ""path"": ""<XRController>{RightHand}/{SecondaryButton}"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""moveSlowerMoveAlongPath"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9b19ecb2-4985-4849-bdb0-9ae135a1e2f8"",
+                    ""path"": ""<XRController>{RightHand}/{PrimaryButton}"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleRecording"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -78,6 +138,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Gameplay = asset.FindActionMap("Gameplay", throwIfNotFound: true);
         m_Gameplay_ToggleMinimap = m_Gameplay.FindAction("ToggleMinimap", throwIfNotFound: true);
         m_Gameplay_StopMoving = m_Gameplay.FindAction("StopMoving", throwIfNotFound: true);
+        m_Gameplay_moveFasterMoveAlongPath = m_Gameplay.FindAction("moveFasterMoveAlongPath", throwIfNotFound: true);
+        m_Gameplay_moveSlowerMoveAlongPath = m_Gameplay.FindAction("moveSlowerMoveAlongPath", throwIfNotFound: true);
+        m_Gameplay_ToggleRecording = m_Gameplay.FindAction("ToggleRecording", throwIfNotFound: true);
     }
 
     ~@PlayerInputActions()
@@ -146,12 +209,18 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private List<IGameplayActions> m_GameplayActionsCallbackInterfaces = new List<IGameplayActions>();
     private readonly InputAction m_Gameplay_ToggleMinimap;
     private readonly InputAction m_Gameplay_StopMoving;
+    private readonly InputAction m_Gameplay_moveFasterMoveAlongPath;
+    private readonly InputAction m_Gameplay_moveSlowerMoveAlongPath;
+    private readonly InputAction m_Gameplay_ToggleRecording;
     public struct GameplayActions
     {
         private @PlayerInputActions m_Wrapper;
         public GameplayActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @ToggleMinimap => m_Wrapper.m_Gameplay_ToggleMinimap;
         public InputAction @StopMoving => m_Wrapper.m_Gameplay_StopMoving;
+        public InputAction @moveFasterMoveAlongPath => m_Wrapper.m_Gameplay_moveFasterMoveAlongPath;
+        public InputAction @moveSlowerMoveAlongPath => m_Wrapper.m_Gameplay_moveSlowerMoveAlongPath;
+        public InputAction @ToggleRecording => m_Wrapper.m_Gameplay_ToggleRecording;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -167,6 +236,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @StopMoving.started += instance.OnStopMoving;
             @StopMoving.performed += instance.OnStopMoving;
             @StopMoving.canceled += instance.OnStopMoving;
+            @moveFasterMoveAlongPath.started += instance.OnMoveFasterMoveAlongPath;
+            @moveFasterMoveAlongPath.performed += instance.OnMoveFasterMoveAlongPath;
+            @moveFasterMoveAlongPath.canceled += instance.OnMoveFasterMoveAlongPath;
+            @moveSlowerMoveAlongPath.started += instance.OnMoveSlowerMoveAlongPath;
+            @moveSlowerMoveAlongPath.performed += instance.OnMoveSlowerMoveAlongPath;
+            @moveSlowerMoveAlongPath.canceled += instance.OnMoveSlowerMoveAlongPath;
+            @ToggleRecording.started += instance.OnToggleRecording;
+            @ToggleRecording.performed += instance.OnToggleRecording;
+            @ToggleRecording.canceled += instance.OnToggleRecording;
         }
 
         private void UnregisterCallbacks(IGameplayActions instance)
@@ -177,6 +255,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @StopMoving.started -= instance.OnStopMoving;
             @StopMoving.performed -= instance.OnStopMoving;
             @StopMoving.canceled -= instance.OnStopMoving;
+            @moveFasterMoveAlongPath.started -= instance.OnMoveFasterMoveAlongPath;
+            @moveFasterMoveAlongPath.performed -= instance.OnMoveFasterMoveAlongPath;
+            @moveFasterMoveAlongPath.canceled -= instance.OnMoveFasterMoveAlongPath;
+            @moveSlowerMoveAlongPath.started -= instance.OnMoveSlowerMoveAlongPath;
+            @moveSlowerMoveAlongPath.performed -= instance.OnMoveSlowerMoveAlongPath;
+            @moveSlowerMoveAlongPath.canceled -= instance.OnMoveSlowerMoveAlongPath;
+            @ToggleRecording.started -= instance.OnToggleRecording;
+            @ToggleRecording.performed -= instance.OnToggleRecording;
+            @ToggleRecording.canceled -= instance.OnToggleRecording;
         }
 
         public void RemoveCallbacks(IGameplayActions instance)
@@ -198,5 +285,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     {
         void OnToggleMinimap(InputAction.CallbackContext context);
         void OnStopMoving(InputAction.CallbackContext context);
+        void OnMoveFasterMoveAlongPath(InputAction.CallbackContext context);
+        void OnMoveSlowerMoveAlongPath(InputAction.CallbackContext context);
+        void OnToggleRecording(InputAction.CallbackContext context);
     }
 }

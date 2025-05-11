@@ -7,6 +7,7 @@ using UnityEngine.AI;
 using Unity.XR.CoreUtils;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion.Comfort;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
@@ -87,7 +88,8 @@ public class MoveAlongPath : LocomotionProvider
                 locomotionEnabled = TryPrepareLocomotion();
                 if (!locomotionEnabled) return;
             }
-
+            Vector2 joystickInput = inputActions.Gameplay.moveFasterMoveAlongPath.ReadValue<Vector2>();
+            moveDistance += joystickInput.y *0.01f;
             timer += Time.deltaTime;
             if (timer >= timeInterval && path!=null && currentCornerIndex < path.corners.Length)
             {

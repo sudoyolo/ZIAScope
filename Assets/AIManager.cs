@@ -38,10 +38,13 @@ public class AIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI aiCommentaryText;
     [SerializeField] private UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor leftRayInteractor;
     [SerializeField] private UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor rightRayInteractor;
+    public Samples.Whisper.Whisper whisper;
     public SceneHierarchyParser parser;
     public Selection selection;
     public Manipulation manipulation;
     public Transform playerpos;
+
+    
     //public ScrollingStringList scrollingList;
 
 
@@ -251,6 +254,8 @@ public class AIManager : MonoBehaviour
                 Debug.LogError("API Error: " + request.error);
                 //aiCommentaryText.text = "Error fetching AI commentary.";
             }
+
+            whisper.requestCompleted();
         }
     }
 
