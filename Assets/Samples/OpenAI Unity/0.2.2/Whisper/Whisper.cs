@@ -16,7 +16,7 @@ namespace Samples.Whisper
         public ScrollingStringList scrollingList;
 
         private readonly string fileName = "output.wav";
-        private readonly int duration = 4;
+        private readonly int duration = 10;
 
         private AudioClip clip;
         private bool isRecording;
