@@ -11,6 +11,7 @@ public class Wayfinding : MonoBehaviour
     public PathManager pathManager;
     public Transform user;
     public MoveAlongPath xrOrigin;
+    public ScrollingStringList scrollingList;
     
     public void illuminatePathBetweenDestinations(String arg)
     {
@@ -55,6 +56,8 @@ public class Wayfinding : MonoBehaviour
         {
             xrOrigin.startTravelling( selection.selectedObjects[0].GetInstanceID());
         }
+        string stopcmd = "Press the right controller trigger button to stop moving along the path";
+        scrollingList.AddString(stopcmd, "lightblue");
     }
     public void TeleportToObj(String input)
     {

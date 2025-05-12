@@ -100,7 +100,9 @@ namespace Samples.Whisper
             requestInProgress = true;
             var res = await openai.CreateAudioTranscription(req);
             Debug.Log(res.Text);
-            progressBar.fillAmount = 0;
+            Color color = progressBar.color;
+            color.a = 0f;
+            progressBar.color = color;
             aiManagerHome.GenerateAICommentary(res.Text);
             isRecording = false;
             time = 0f;
@@ -114,14 +116,19 @@ namespace Samples.Whisper
             
             if (isRecording)
             {
-                time += Time.deltaTime;
-                progressBar.fillAmount = 1;
+                float pulse = (Mathf.Sin(Time.time * 6f) + 1f) / 2f;
+                Color color = progressBar.color;
+                color.a = Mathf.Lerp(0.3f, 1f, pulse); 
+                progressBar.color = color;
             }
             else
             {
-                progressBar.fillAmount = 0;
+                Color color = progressBar.color;
+                color.a = 0f; 
+                progressBar.color = color;
+                //progressBar.fillAmount = 0;
             }
-
+            
             if (time >= duration)
             {
                 EndRecording();
