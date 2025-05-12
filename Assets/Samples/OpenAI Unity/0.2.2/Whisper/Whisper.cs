@@ -77,6 +77,7 @@ namespace Samples.Whisper
             isRecording = true;
 
 #if !UNITY_WEBGL
+            //int index = PlayerPrefs.GetInt("user-mic-device-index");
             int index = 1;
 
             if (index >= 0 && index < microphoneDevices.Count)
@@ -94,6 +95,8 @@ namespace Samples.Whisper
 
         private async void EndRecording()
         {
+            isRecording = false;
+            time = 0f;
 #if !UNITY_WEBGL
             Microphone.End(null);
 #endif
@@ -106,14 +109,12 @@ namespace Samples.Whisper
                 Model = "whisper-1",
                 Language = "en"
             };
-            requestInProgress = true;
             var res = await openai.CreateAudioTranscription(req);
-
+            
             progressBar.fillAmount = 0;
             scrollingList.AddString(res.Text, "white");
             aiManager.GenerateAICommentary(res.Text);
-            isRecording = false;
-            time = 0f;
+            
         }
 
         private void Update()
@@ -128,7 +129,7 @@ namespace Samples.Whisper
             {
                 progressBar.fillAmount = 0;
             }
-
+            
             if (time >= duration)
             {
                 EndRecording();

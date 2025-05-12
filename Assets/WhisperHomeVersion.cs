@@ -42,7 +42,10 @@ namespace Samples.Whisper
             inputActions.Gameplay.ToggleRecording.performed += ToggleRecording;
             time = 0f;
         }
-        
+        void OnDisable()
+        {
+            inputActions.Gameplay.ToggleRecording.performed -= ToggleRecording;
+        }
         
         private void ToggleRecording(InputAction.CallbackContext context)
         {
@@ -71,8 +74,8 @@ namespace Samples.Whisper
         {
             isRecording = true;
 
-            var index = PlayerPrefs.GetInt("user-mic-device-index");
-            
+            //int index = PlayerPrefs.GetInt("user-mic-device-index");
+            int index = 2;
             #if !UNITY_WEBGL
             clip = Microphone.Start(dropdown.options[index].text, false, duration, 44100);
             #endif
@@ -96,10 +99,8 @@ namespace Samples.Whisper
             };
             requestInProgress = true;
             var res = await openai.CreateAudioTranscription(req);
-
+            Debug.Log(res.Text);
             progressBar.fillAmount = 0;
-            //message.text = res.Text;
-            // stuff here!! res.Text
             aiManagerHome.GenerateAICommentary(res.Text);
             isRecording = false;
             time = 0f;

@@ -49,9 +49,10 @@ public class AIManagerHome : MonoBehaviour
             request.SetRequestHeader("Content-Type", "application/json");
 
             yield return request.SendWebRequest();
-
+            whisper.requestCompleted();
             if (request.result == UnityWebRequest.Result.Success)
             {
+                
                 string response = request.downloadHandler.text;
                 string formatted = ExtractCommentaryFromResponse(response);
                 Debug.Log("Gemini API Response: " + formatted);
@@ -63,7 +64,7 @@ public class AIManagerHome : MonoBehaviour
                 Debug.LogError("API Error: " + request.error);
                 //aiCommentaryText.text = "Error fetching AI commentary.";
             }
-            whisper.requestCompleted();
+            
         }
     }
 
