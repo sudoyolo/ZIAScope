@@ -25,11 +25,11 @@ namespace Samples.Whisper
         private OpenAIApi openai = new OpenAIApi("api key");
         private PlayerInputActions inputActions;
         private bool requestInProgress;
-        
         private void Start()
         {
             isRecording = false;
             requestInProgress = false;
+            time = 0f;
             inputActions = InputManager.inputActions;
             inputActions.Gameplay.ToggleRecording.performed += ToggleRecording; 
             globalVariables = FindObjectOfType<GlobalVariables>();
@@ -55,6 +55,7 @@ namespace Samples.Whisper
 
         private void ToggleRecording(InputAction.CallbackContext context)
         {
+            
             if (!requestInProgress)
             {
                 if (isRecording)
@@ -77,8 +78,6 @@ namespace Samples.Whisper
 
 #if !UNITY_WEBGL
             int index = 1;
-
-
 
             if (index >= 0 && index < microphoneDevices.Count)
             {
@@ -114,17 +113,25 @@ namespace Samples.Whisper
             scrollingList.AddString(res.Text, "white");
             aiManager.GenerateAICommentary(res.Text);
             isRecording = false;
+            time = 0f;
         }
 
         private void Update()
         {
+            
             if (isRecording)
             {
+                time += Time.deltaTime;
                 progressBar.fillAmount = 1;
             }
             else
             {
                 progressBar.fillAmount = 0;
+            }
+
+            if (time >= duration)
+            {
+                EndRecording();
             }
         }
     }

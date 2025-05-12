@@ -39,7 +39,8 @@ namespace Samples.Whisper
             #endif
             requestInProgress = false;
             inputActions = InputManager.inputActions;
-            inputActions.Gameplay.ToggleRecording.performed += ToggleRecording; 
+            inputActions.Gameplay.ToggleRecording.performed += ToggleRecording;
+            time = 0f;
         }
         
         
@@ -101,7 +102,7 @@ namespace Samples.Whisper
             // stuff here!! res.Text
             aiManagerHome.GenerateAICommentary(res.Text);
             isRecording = false;
-
+            time = 0f;
         }
         public void requestCompleted()
         {
@@ -109,13 +110,20 @@ namespace Samples.Whisper
         }
         private void Update()
         {
+            
             if (isRecording)
             {
+                time += Time.deltaTime;
                 progressBar.fillAmount = 1;
             }
             else
             {
                 progressBar.fillAmount = 0;
+            }
+
+            if (time >= duration)
+            {
+                EndRecording();
             }
         }
     }
