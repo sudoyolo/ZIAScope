@@ -13,7 +13,6 @@ namespace Samples.Whisper
         [SerializeField] private Dropdown dropdown;
         [SerializeField] private AIManagerHome aiManagerHome;
         public GlobalVariables globalvariables;
-        public GameObject spinner;
         private readonly string fileName = "output.wav";
         private readonly int duration = 10;
         
@@ -75,11 +74,8 @@ namespace Samples.Whisper
         {
             isRecording = true;
 
-            int index=1;
-            if(globalvariables!=null) {
-                index = globalvariables.microphoneIdx;
-                Debug.Log("global variable idx is " + index);
-            }
+            int index = PlayerPrefs.GetInt("user-mic-device-index");
+            //int index = 2;
             #if !UNITY_WEBGL
             clip = Microphone.Start(dropdown.options[index].text, false, duration, 44100);
             #endif
@@ -87,8 +83,7 @@ namespace Samples.Whisper
 
         private async void EndRecording()
         {
-            isRecording = false;
-            time = 0f;
+            
             #if !UNITY_WEBGL
             Microphone.End(null);
             #endif
@@ -103,18 +98,17 @@ namespace Samples.Whisper
                 Language = "en"
             };
             requestInProgress = true;
-            spinner.SetActive(true);
             var res = await openai.CreateAudioTranscription(req);
             Debug.Log(res.Text);
             Color color = progressBar.color;
             color.a = 0f;
             progressBar.color = color;
             aiManagerHome.GenerateAICommentary(res.Text);
-            
+            isRecording = false;
+            time = 0f;
         }
         public void requestCompleted()
         {
-            spinner.SetActive(false);
             requestInProgress = false;
         }
         private void Update()
@@ -122,7 +116,6 @@ namespace Samples.Whisper
             
             if (isRecording)
             {
-                time += Time.deltaTime;
                 float pulse = (Mathf.Sin(Time.time * 6f) + 1f) / 2f;
                 Color color = progressBar.color;
                 color.a = Mathf.Lerp(0.3f, 1f, pulse); 

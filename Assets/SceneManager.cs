@@ -7,14 +7,15 @@ using TMPro;
 using System.Text.RegularExpressions;
 using UnityEngine.SceneManagement; // Needed for SceneManager.LoadScene()
 
-public class SceneManager : MonoBehaviour
+public class SceneLoader : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI feedback;
-    public static SceneManager Instance { get; private set; }
+    //public static SceneLoader Instance { get; private set; }
     [SerializeField] private Button button1;
     [SerializeField] private Button button2;
     [SerializeField] private Button button3;
 
+/*
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -25,7 +26,7 @@ public class SceneManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject); 
     }
-
+*/
     void Start()
     {
         // Set up button listeners

@@ -26,7 +26,7 @@ public class ComputerVision : MonoBehaviour
 
     [Header("API Settings")]
     private string replicateUrl = "https://api.replicate.com/v1/predictions";
-    private string replicateToken = ""; // GET RID BEFORE PUSH ELSE DIE
+    private string replicateToken = "token"; // GET RID BEFORE PUSH ELSE DIE
     private string llavaModelVersion = "80537f9eead1a5bfa72d5ac6ea6414379be41d4d4f6679fd776e9535d1eb58bb"; // LLaVA 13B
 
     void Start()

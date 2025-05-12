@@ -51,6 +51,7 @@ public class Wayfinding : MonoBehaviour
     }
     public void GoAlongPath(String input)
     {
+        Debug.Log("does this ever get called");
         illuminatePathBetweenDestinations(input);
         if (selection.selectedObjects.Count == 1)
         {

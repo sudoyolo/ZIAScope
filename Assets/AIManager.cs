@@ -116,7 +116,7 @@ public class AIManager : MonoBehaviour
         prompt += "[9] Show path between two locations: If user themselves is one of the location objects, only include one argument. If only one object is specified in the query, it is implied that the user is the other object. e.g. the query \'route to fridge\' returns \'9 12\'. If user is not one of the location objects, return object indices of the relevant objects. \'9 23 62\'\n";
         prompt += "[10] Clear single path: user wants to remove a single path. Return only one argument if the path is between the user and an object. e.g. \'10 63\'. Return two arguments if the path is between two objects that don't include the user \'10 23 64\'\n";
         prompt += "[11] Clear all existing paths: user wants to remove and stop showing all previous paths. Simply return \'11 clear paths\'\n";
-        prompt += "[12] Move the user along the path to an object. Return the destination object index as an argument. Return \'12 35\'";
+        prompt += "[12] Move/take the user along the path to an object. Return the destination object index as an argument. Return \'12 35\'";
         prompt += "[13] Teleport to Object: Teleport the user to the location of an object. Pass the index of the object as the argument. E.g. \'13 25\' ";
         // OBJECT CREATION
         prompt += "[14] Create/add/generate an object: Look through the list of available objects in this list, if the user wants to generate a new object in this list, return just the function index and object's index, eg \'14 4\'. If no object match exists, respond with only \"?\"Sorry, the object you requested is not available.\"\"\n";
@@ -188,10 +188,21 @@ public class AIManager : MonoBehaviour
         prompt += "[9] Show path between two locations: If user is one of the location objects, only include one argument. If only one object is specified in the query, then it is implied that the user is the other objects. e.g. the query \'route to fridge\' returns \'9 12\'. If user is not one of the location objects, return object indices of the relevant objects. \'9 23 62\'\n";
         prompt += "[10] Clear single path: user wants to remove a single path. Return only one argument if the path is between the user and an object. e.g. \'10 63\'. Return two arguments if the path is between two objects that don't include the user \'10 23 64\'\n";
         prompt += "[11] Clear all existing paths: user wants to remove and stop showing all previous paths. Simply return \'11 clear paths\'\n";
-        prompt += "[12] Move the user along the path to an object. Return the destination object index as an argument. Return \'12 35\'";
+        prompt += "[12] Move/take the user along the path to an object. Return the destination object index as an argument. Return \'12 35\'";
         prompt += "[13] Teleport to Object: Teleport the user to the location of an object. Pass the index of the object as the argument. E.g. \'13 25\' ";
         // OBJECT CREATION
         prompt += "[14] Create object: NOT AVAILABLE\n";
+        // UNDO REDO
+        prompt += "[15] Undo: NOT AVAILABLE\n";
+        prompt += "[16] Redo: NOT AVAILABLE\n";
+        // LIGHTING
+        prompt += "[17] Change time of day: NOT AVAILABLE\n";
+        prompt += "[18] Change scene lighting color: NOT AVAILABLE\n";
+        prompt += "[19] Toggle on/off the lights: NOT AVAILABLE\n";
+        // FEEDBACK
+        prompt += "[20] Computer Vision Feedback: NOT AVAILABLE\n";
+        // RETURN TO HOME
+        prompt += "[21] User wants to return to this app's home page (also known as landing page or starting page), simply return 21 empty, ?\"Returning home...\"\n";
         // FEEDBACK TWEAKS TO BLOCK MANIPULATION
         prompt += "If the function does not match an available one, respond with ?\"The function you requested is not available.\" Do not respond affirming functions are called when they are not.\n";
         // WAYFINDING TWEAKS

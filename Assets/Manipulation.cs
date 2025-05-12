@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Text.RegularExpressions;
+using UnityEngine.SceneManagement;
 
 
 
@@ -18,14 +19,15 @@ public class Manipulation : MonoBehaviour
     public UndoRedoManager undoredo;
     public AIManager aiManager;
     public LightingManager lightingManager;
-    public SceneManager sceneManager;
+    //public SceneLoader sceneManager;
     public ComputerVision computerVision;
     private int lastCreatedIdx = -1;
+    
 
     // Start is called before the first frame update
     void Start()
     {
-        sceneManager = FindObjectOfType<SceneManager>();
+        //sceneManager = FindObjectOfType<SceneLoader>();
 
         //selection = GetComponent<Selection>();
         functionList = new List<Action<string>>
@@ -51,7 +53,7 @@ public class Manipulation : MonoBehaviour
             lightingManager.SetLightColorFromRGB,        // 18
             lightingManager.ToggleAllLampChildren,       // 19
             computerVision.SubmitPrompt,                 // 20
-            sceneManager.LoadHome                        // 21
+            LoadHome                                     // 21  //sceneManager.LoadHome                        
         };
 
     }
@@ -430,7 +432,10 @@ public class Manipulation : MonoBehaviour
         instance.name = prefab.name + "_Clone";
         instance.transform.parent = parser.sceneObjects.transform;
     }
-
+    public void LoadHome(string buff)
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+    }
 
 
 }

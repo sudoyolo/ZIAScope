@@ -10,7 +10,7 @@ using System.Collections.Generic;
 public class AIManagerHome : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI aiCommentaryText;
-    [SerializeField] private SceneManager sceneManager;
+    [SerializeField] private SceneLoader sceneManager;
     public Samples.Whisper.WhisperHomeVersion whisper;
     private const string API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
     private const string API_KEY = "AIzaSyAfwHYTIMHPY4SWAqwRu25x0YIRgt_kiTU";
