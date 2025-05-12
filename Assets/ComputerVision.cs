@@ -26,7 +26,7 @@ public class ComputerVision : MonoBehaviour
 
     [Header("API Settings")]
     private string replicateUrl = "https://api.replicate.com/v1/predictions";
-    private string replicateToken = "token"; // GET RID BEFORE PUSH ELSE DIE
+    private string replicateToken = "empty"; // GET RID BEFORE PUSH ELSE DIE
     private string llavaModelVersion = "80537f9eead1a5bfa72d5ac6ea6414379be41d4d4f6679fd776e9535d1eb58bb"; // LLaVA 13B
 
     void Start()
@@ -52,9 +52,9 @@ public class ComputerVision : MonoBehaviour
     public void SubmitPrompt(string text)
     {
         string prompt = "";
-        prompt += "The user is designing a scene in a virtual environment, and wants some feedback about this screen capture of their scene. In 30 words or less, provide them an answer to this question: ";
+        prompt += "The user is designing a scene in a virtual environment, and wants some feedback about this screen capture of their scene. In 25 words or less, provide them an answer to this question: ";
         prompt += text;
-        prompt += "\nAlso offer critiques or improvements, and point out any flaws. Do not describe what is obviously in the scene.";
+        prompt += "\nAlso offer critiques or improvements, and point out any flaws. Focus on color/lighting/placement changes. Try not to suggest adding new things that do not already exist in the scene. Do not describe what is obviously in the scene.";
         StartCoroutine(SendImageWithPromptToReplicate(prompt));
     }
 
