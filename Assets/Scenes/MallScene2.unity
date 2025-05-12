@@ -285,15 +285,15 @@ RectTransform:
   m_GameObject: {fileID: 11386769}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.4499998, y: 2.4499998, z: 2.4499998}
+  m_LocalScale: {x: 1.0007253, y: 1.0007253, z: 1.0007253}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1744658163}
+  m_Father: {fileID: 1837680181}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 1037, y: -421}
-  m_SizeDelta: {x: -1320, y: -591}
+  m_AnchoredPosition: {x: 39.212097, y: -413}
+  m_SizeDelta: {x: -220, y: -298.8839}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &11386771
 MonoBehaviour:
@@ -1202,7 +1202,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1364, y: 151}
+  m_AnchoredPosition: {x: 625, y: 151}
   m_SizeDelta: {x: 800, y: 800}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &162008672
@@ -2267,7 +2267,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &367585924
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2284,7 +2284,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1587, y: 588}
+  m_AnchoredPosition: {x: 853, y: 596}
   m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &367585925
@@ -2643,7 +2643,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &423430756
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3380,7 +3380,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_BoundingSphereOverride: {x: 3.122407e-39, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 100
@@ -10071,7 +10071,7 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.16666667
+  m_VoxelSize: 0.06666667
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: 7b24bf631b8154b779951a482356e8e6, type: 2}
   m_BuildHeightMesh: 0
@@ -12116,14 +12116,13 @@ RectTransform:
   m_Children:
   - {fileID: 423430756}
   - {fileID: 1837680181}
-  - {fileID: 11386770}
   - {fileID: 79396112}
   - {fileID: 367585924}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -0.11, y: 1.39}
+  m_AnchoredPosition: {x: 0, y: 1.39}
   m_SizeDelta: {x: 1400, y: 621}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1744658164
@@ -12718,12 +12717,13 @@ RectTransform:
   m_LocalScale: {x: 2.4482243, y: 2.4482243, z: 2.4482243}
   m_ConstrainProportionsScale: 1
   m_Children:
+  - {fileID: 11386770}
   - {fileID: 2127738154}
   m_Father: {fileID: 1744658163}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1692, y: 956}
+  m_AnchoredPosition: {x: 941, y: 956}
   m_SizeDelta: {x: 299.99997, y: 328.8839}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1847373557
@@ -14446,7 +14446,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0.9, y: 2.5}
   m_SizeDelta: {x: 30, y: 30}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &2127738155

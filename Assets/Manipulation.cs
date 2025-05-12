@@ -18,11 +18,15 @@ public class Manipulation : MonoBehaviour
     public UndoRedoManager undoredo;
     public AIManager aiManager;
     public LightingManager lightingManager;
+    public SceneManager sceneManager;
+    public ComputerVision computerVision;
     private int lastCreatedIdx = -1;
 
     // Start is called before the first frame update
     void Start()
     {
+        sceneManager = FindObjectOfType<SceneManager>();
+
         //selection = GetComponent<Selection>();
         functionList = new List<Action<string>>
         {
@@ -45,8 +49,11 @@ public class Manipulation : MonoBehaviour
             undoredo.Redo,                               // 16
             lightingManager.SetEnvironment,              // 17
             lightingManager.SetLightColorFromRGB,        // 18
-            lightingManager.ToggleAllLampChildren        // 19
+            lightingManager.ToggleAllLampChildren,       // 19
+            computerVision.SubmitPrompt,                 // 20
+            sceneManager.LoadHome                        // 21
         };
+
     }
 
     void Update()
@@ -359,7 +366,8 @@ public class Manipulation : MonoBehaviour
             GameObject original = selection.selectedObjects[i];
             GameObject duplicate = Instantiate(original);
             duplicate.transform.SetParent(original.transform.parent, false);
-            duplicate.transform.position = original.transform.position + new Vector3(0.5f, 0.0f, 0.5f);
+            duplicate.transform.position = new Vector3(aiManager.playerpos.position.x + 0.25f, selection.selectedObjects[i].transform.position.y, aiManager.playerpos.position.z + 0.25f);
+            //duplicate.transform.position = original.transform.position + new Vector3(0.5f, 0.0f, 0.5f);
             duplicate.name = original.name + "_Copy";
 
             selection.selectedObjects[i] = duplicate;
@@ -374,9 +382,8 @@ public class Manipulation : MonoBehaviour
     {
         foreach(GameObject obj in selection.selectedObjects) {
             Destroy(obj);
-            string buff = parser.ParseHierarchy();
-
         }
+        string buff = parser.ParseHierarchy();
     }
 
     public void CreateObject(string indexString)
@@ -400,7 +407,7 @@ public class Manipulation : MonoBehaviour
             return;
         }
         float originalY = prefab.transform.position.y;
-        Vector3 newPosition = new Vector3(aiManager.playerpos.position.x, originalY, aiManager.playerpos.position.z);
+        Vector3 newPosition = new Vector3(aiManager.playerpos.position.x + 0.25f, originalY, aiManager.playerpos.position.z + 0.25f);
         Quaternion newRotation = Quaternion.Euler(-90f, 0f, 0f);
         GameObject instance = Instantiate(prefab, newPosition, newRotation);
         //GameObject instance = Instantiate(prefab, newPosition, prefab.transform.rotation);

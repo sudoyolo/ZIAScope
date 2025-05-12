@@ -11,39 +11,51 @@ using System.Linq;
 
 public class ComputerVision : MonoBehaviour
 {
+    /*
     [Header("UI")]
-    public GameObject xrDeviceSimulatorObject; // Assign the XR Device Simulator
+    public GameObject xrDeviceSimulatorObject; 
     private MonoBehaviour xrSimulatorComponent;
 
     public TMP_InputField promptInput;
     public TextMeshProUGUI responseText;
+    */
+    public ScrollingStringList scrollingList;
 
     [Header("Camera")]
-    public Camera captureCamera; // Assign XR Origin Camera in Inspector
+    public Camera captureCamera; 
 
     [Header("API Settings")]
     private string replicateUrl = "https://api.replicate.com/v1/predictions";
-    private string replicateToken = ""; // 🔐 Replace with your actual token
+    private string replicateToken = ""; // GET RID BEFORE PUSH ELSE DIE
     private string llavaModelVersion = "80537f9eead1a5bfa72d5ac6ea6414379be41d4d4f6679fd776e9535d1eb58bb"; // LLaVA 13B
 
     void Start()
     {
-        xrSimulatorComponent = xrDeviceSimulatorObject.GetComponent<MonoBehaviour>();
+        //xrSimulatorComponent = xrDeviceSimulatorObject.GetComponent<MonoBehaviour>();
 
-        promptInput.onSelect.AddListener(_ => ToggleXR(false));
-        promptInput.onDeselect.AddListener(_ => ToggleXR(true));
-        promptInput.onSubmit.AddListener(OnPromptSubmitted);
+        //promptInput.onSelect.AddListener(_ => ToggleXR(false));
+        //promptInput.onDeselect.AddListener(_ => ToggleXR(true));
+        //promptInput.onSubmit.AddListener(OnPromptSubmitted);
     }
-
+    /*
     void ToggleXR(bool enabled)
     {
         if (xrSimulatorComponent != null)
             xrSimulatorComponent.enabled = enabled;
-    }
+    }*/
 
     void OnPromptSubmitted(string text)
     {
         StartCoroutine(SendImageWithPromptToReplicate(text));
+    }
+
+    public void SubmitPrompt(string text)
+    {
+        string prompt = "";
+        prompt += "The user is designing a scene in a virtual environment, and wants some feedback about this screen capture of their scene. In 30 words or less, provide them an answer to this question: ";
+        prompt += text;
+        prompt += "\nAlso offer critiques or improvements, and point out any flaws. Do not describe what is obviously in the scene.";
+        StartCoroutine(SendImageWithPromptToReplicate(prompt));
     }
 
     IEnumerator SendImageWithPromptToReplicate(string prompt)
@@ -104,13 +116,12 @@ public class ComputerVision : MonoBehaviour
         if (request.result != UnityWebRequest.Result.Success)
         {
             Debug.LogError("Request error: " + request.error);
-            responseText.text = "API request failed: " + request.error;
+            //responseText.text = "API request failed: " + request.error;
             yield break;
         }
 
         string pollUrl = GetPollUrl(request.downloadHandler.text);
 
-        // Poll the prediction result
         while (true)
         {
             UnityWebRequest poll = UnityWebRequest.Get(pollUrl);
@@ -119,7 +130,7 @@ public class ComputerVision : MonoBehaviour
 
             if (poll.result != UnityWebRequest.Result.Success)
             {
-                responseText.text = "Polling failed: " + poll.error;
+               //responseText.text = "Polling failed: " + poll.error;
                 yield break;
             }
 
@@ -127,12 +138,14 @@ public class ComputerVision : MonoBehaviour
             if (resultJson.Contains("\"status\":\"succeeded\""))
             {
                 string output = ExtractOutputFromJson(resultJson);
-                responseText.text = output;
+                // OUTPUT HERE
+                scrollingList.AddString(output, "lightblue");
+                //responseText.text = output;
                 yield break;
             }
             else if (resultJson.Contains("\"status\":\"failed\""))
             {
-                responseText.text = "Prediction failed.";
+                //responseText.text = "Prediction failed.";
                 yield break;
             }
 

@@ -1,7 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+#if UNITY_EDITOR
+using UnityEditor;
 using UnityEditor.VersionControl;
+#endif
 using UnityEngine;
 using UnityEngine.AI;
 using Unity.XR.CoreUtils;

@@ -102,7 +102,7 @@ public class AIManager : MonoBehaviour
         
         // SELECTION
         prompt += "[0] Selection: User wants to select something. Pick the object that matches what they ask for, return its index and only its index. If no clear match exists, prompt for more clarity, prompts should start with a ? and be quotation encapsulated. When users say \'Everything\' they mean every object. ";
-        prompt += "If multiple objects are selected, return a space separated list of only integers. When users say \'this object\' they typically mean an object close to them, while \'that object\' means a further distance; take this into account.\n";
+        prompt += "If multiple objects are selected, return a space separated list of only integers. When users say \'this object\' they typically mean the object closest to them, while \'that over there\' means further away; take this into account.\n";
         // ALL MANIPULATION FUNCTIONS
         prompt += "[1] Change position: User wants to move an object. Pick a direction closest to: forward/backward/up/down/left/right. Return the direction they ask for as a string. If they ask for a numerical distance return that too, otherwise return 1. Example: \'1 forward 3\'\n";
         prompt += "[2] Set position: User wants to set the position of an object. If they wish to move an object to another existing object, return that target object's coordinate position with three numbers ; separated, e.g. \'Move the cushion to the couch\' should select the cushions first, then return in format \'2 5;4;2\'\n";        
@@ -129,6 +129,10 @@ public class AIManager : MonoBehaviour
         prompt += "[17] Change time of day: user wants to change scene to a certain time of day. Choose closest between these options and return the index: [0] daytime, [1] nighttime, [2] sunset/dusk. For example you could return 17 1, ?\"Changing scene to nighttime.\"\n";
         prompt += "[18] Change scene lighting color: user wants to change the color of the overall scene lighting. Return 18 followed by an rgb value based on color they say, semicolon separated. Eg if the user asks \'Change the lighting to be marigold\', return 18 242;179;41, ?\"Changing the scene lighting to marigold.\"\n";
         prompt += "[19] Toggle on/off the lights: user wants to turn off or on the lamp lights. Note that this is different to the overall scene lighting. Return simply 19 lights, ?\"Toggling the lights.\"\n";
+        // FEEDBACK
+        prompt += "[20] User wants some qualitative feedback on how their scene looks, such as asking \'Does the color scheme look okay?\' or \'Does this fit a children's theme\'. You will be invoking a computer vision model for more feedback. Return a string in the format of 20, followed by the user's prompt, followed by simply ?\"Generating feedback: \" . For example: 20 does color scheme look good, ?\"Generating feedback: \"\n";
+        // RETURN TO HOME
+        prompt += "[21] User wants to return to this app's home page (also known as landing page or starting page), simply return 21 empty, ?\"Returning home...\"\n";
         // TWEAKS
         prompt += "For all functions except for Selection, if there is an implicit choice of object, eg. \'make chairs red\' then selection should be called as well as further object manipulation. Often you will have to check past prompt to ensure you are selecting the correct object.\n";
         prompt += "Example, where chair is scene idx 1: \'Select the chair, change its color to red, move it back\' should return string \'0 1, 4 red, 1 backward 1, ?\"Made the chairs red and moved them backwards by one.\"\' \n";

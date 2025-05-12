@@ -10,10 +10,21 @@ using UnityEngine.SceneManagement; // Needed for SceneManager.LoadScene()
 public class SceneManager : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI feedback;
-
+    public static SceneManager Instance { get; private set; }
     [SerializeField] private Button button1;
     [SerializeField] private Button button2;
     [SerializeField] private Button button3;
+
+    void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject); // Avoid duplicates
+            return;
+        }
+        Instance = this;
+        DontDestroyOnLoad(gameObject); 
+    }
 
     void Start()
     {
@@ -44,6 +55,12 @@ public class SceneManager : MonoBehaviour
     public void LoadScene(int sceneIndex)
     {
         StartCoroutine(DelayedSceneLoad(sceneIndex));
+    }
+
+    public void LoadHome(string buff)
+    {
+        StartCoroutine(DelayedSceneLoad(0));
+        //UnityEngine.SceneManagement.SceneManager.LoadScene(0);
     }
 
     private IEnumerator DelayedSceneLoad(int sceneIndex)
