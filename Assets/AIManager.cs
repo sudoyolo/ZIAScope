@@ -150,6 +150,8 @@ public class AIManager : MonoBehaviour
         // FEEDBACK
         prompt += "For every command, make sure to also provide short feedback note explaining what you understood, in the format of a ? followed by text enclosed in quotation marks.\n";
         prompt += "For example, an entire command string could be 0 5, 4 0;0;0, ?\"Changing chair to black\"\n";
+        prompt += "Specifically if command 12 is an included command that gets returned, include this line at the end of the response \" Press the right controller trigger button to stop moving along the path.\"\n";
+        prompt+= "For example, an entire command string could be 0 42, 12 42, ?\"Moving you along the path to the fridge. Press the right controller trigger button to stop moving along the path.\"\n";
         // FURTHER PROMPTING
         prompt += "If the user's input is unclear, \'?\' followed by a message can also be used to ask for more confirmation. This message should be encapsulated in quotation marks, e.g. ? \"Please repeat what you said.\"\n";
         prompt += "For example, if they ask to select something that is not in the scene, return something like \'? \"Sorry, I couldn't understand which object you meant, try again?\"\'";
@@ -206,6 +208,8 @@ public class AIManager : MonoBehaviour
         // FEEDBACK
         prompt += "For every command, make sure to also provide short feedback note explaining what you understood, in the format of a ? followed by text enclosed in quotation marks.\n";
         prompt += "For example, an entire command string could be 0 23 64, 10 23 64, ?\"Removing the path between the exit and the bathroom.\"\n";
+        prompt += "Specifically if command 12 is an included command that gets returned, include this line at the end of the response \" Press the right controller trigger button to stop moving along the path.\"\n";
+        prompt+= "For example, an entire command string could be 0 42, 12 42, ?\"Moving you along the path to the fridge. Press the right controller trigger button to stop moving along the path.\"\n";
         // FURTHER PROMPTING
         prompt += "If the user's input is unclear, \'?\' followed by a message can also be used to ask for more confirmation. This message should be encapsulated in quotation marks, e.g. ? \"Please repeat what you said.\"\n";
         prompt += "For example, if they ask to select something that is not in the scene, return something like \'? \"Sorry, I couldn't understand which object you meant, try again?\"\'";
