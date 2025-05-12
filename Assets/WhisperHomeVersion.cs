@@ -86,7 +86,8 @@ namespace Samples.Whisper
 
         private async void EndRecording()
         {
-            
+            isRecording = false;
+            time = 0f;
             #if !UNITY_WEBGL
             Microphone.End(null);
             #endif
@@ -107,8 +108,7 @@ namespace Samples.Whisper
             color.a = 0f;
             progressBar.color = color;
             aiManagerHome.GenerateAICommentary(res.Text);
-            isRecording = false;
-            time = 0f;
+            
         }
         public void requestCompleted()
         {
@@ -119,6 +119,7 @@ namespace Samples.Whisper
             
             if (isRecording)
             {
+                time += Time.deltaTime;
                 float pulse = (Mathf.Sin(Time.time * 6f) + 1f) / 2f;
                 Color color = progressBar.color;
                 color.a = Mathf.Lerp(0.3f, 1f, pulse); 

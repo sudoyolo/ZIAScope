@@ -132,6 +132,7 @@ namespace Samples.Whisper
             
             if (isRecording)
             {
+                time += Time.deltaTime;
                 float pulse = (Mathf.Sin(Time.time * 6f) + 1f) / 2f;
                 Color color = progressBar.color;
                 color.a = Mathf.Lerp(0.3f, 1f, pulse); 
