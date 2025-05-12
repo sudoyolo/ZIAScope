@@ -199,11 +199,11 @@ public class AIManager : MonoBehaviour
         prompt += "Similarly, for deleting a single path, if the query includes the user as an object for the path, only include one argument in the selection. e.g. \'Delete the route to the couch\' when the couch idx is 25 should be \'0 25, 10 25\'\n";
         prompt += "If the route doesn't include the user as an object for the path, there should be two arguments for each of the corresponding objects in the selection. e.g. \'Delete the route between the couch and the fridge\', then if the couch index is 63 and the fridge index is 25, return \'0 63 25, 10 63 25\'\n";
         prompt += "For teleportation, selection should also be called on the destination object prior to the teleportation function call, e.g. \'0 25, 13 25\' where 25 is the destination object. ";
-        prompt +=
-            "If describing an object for user routing using other objects. Only select the destination object that's relevant. For example \'Move me along the path to the plant near the lamp\', should return \'0 35, 12 35\' where 35 is the index of the plant";
+        prompt += "If describing an object for user routing using other objects. Only select the destination object that's relevant. For example \'Move me along the path to the plant near the lamp\', should return \'0 35, 12 35\' where 35 is the index of the plant";
         // FEEDBACK
         prompt += "For every command, make sure to also provide short feedback note explaining what you understood, in the format of a ? followed by text enclosed in quotation marks.\n";
         prompt += "For example, an entire command string could be 0 23 64, 10 23 64, ?\"Removing the path between the exit and the bathroom.\"\n";
+        prompt += "Sometimes a user is just asking for more context, without necessarily wanting to call a function. If this occurs reply naturally with a ? followed by enclosed quotations. For example, the user could ask \"is there a cafe here\" and you can reply something like \"Yes, would you like me to show you where it is?\" if it indeed does exist in the scene.\n";
         // FURTHER PROMPTING
         prompt += "If the user's input is unclear, \'?\' followed by a message can also be used to ask for more confirmation. This message should be encapsulated in quotation marks, e.g. ? \"Please repeat what you said.\"\n";
         prompt += "For example, if they ask to select something that is not in the scene, return something like \'? \"Sorry, I couldn't understand which object you meant, try again?\"\'";
