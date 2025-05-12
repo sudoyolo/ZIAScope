@@ -25,11 +25,15 @@ namespace Samples.Whisper
         private OpenAIApi openai = new OpenAIApi("api key");
         private PlayerInputActions inputActions;
         private bool requestInProgress;
+        private float errorHandling;
+        private float errorDuration;
         private void Start()
         {
             isRecording = false;
             requestInProgress = false;
             time = 0f;
+            errorHandling = 0f;
+            errorDuration = 45f;
             inputActions = InputManager.inputActions;
             inputActions.Gameplay.ToggleRecording.performed += ToggleRecording; 
             globalVariables = FindObjectOfType<GlobalVariables>();
@@ -51,6 +55,7 @@ namespace Samples.Whisper
         public void requestCompleted()
         {
             requestInProgress = false;
+            errorHandling = 0f;
         }
 
         private void ToggleRecording(InputAction.CallbackContext context)
@@ -145,7 +150,17 @@ namespace Samples.Whisper
                 progressBar.color = color;
                 //progressBar.fillAmount = 0;
             }
-            
+
+            if (requestInProgress && !isRecording)
+            {
+                errorHandling += Time.deltaTime;
+                if (errorHandling > errorDuration)
+                {
+                    requestInProgress = false;
+                    errorHandling = 0f;
+                }
+            }
+
             if (time >= duration)
             {
                 EndRecording();
