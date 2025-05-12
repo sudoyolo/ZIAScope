@@ -44,7 +44,7 @@ public class AIManager : MonoBehaviour
     public Transform playerpos;
     //public ScrollingStringList scrollingList;
 
-
+    public Samples.Whisper.Whisper whisper;
     private const string API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
     private const string API_KEY = "AIzaSyAfwHYTIMHPY4SWAqwRu25x0YIRgt_kiTU";
     private string scene_desc;
@@ -252,6 +252,7 @@ public class AIManager : MonoBehaviour
                 Debug.LogError("API Error: " + request.error);
                 //aiCommentaryText.text = "Error fetching AI commentary.";
             }
+            whisper.requestCompleted();
         }
     }
 

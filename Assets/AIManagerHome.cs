@@ -49,7 +49,6 @@ public class AIManagerHome : MonoBehaviour
             request.SetRequestHeader("Content-Type", "application/json");
 
             yield return request.SendWebRequest();
-            whisper.requestCompleted();
             if (request.result == UnityWebRequest.Result.Success)
             {
                 
@@ -64,7 +63,8 @@ public class AIManagerHome : MonoBehaviour
                 Debug.LogError("API Error: " + request.error);
                 //aiCommentaryText.text = "Error fetching AI commentary.";
             }
-            
+
+            whisper.requestCompleted();
         }
     }
 

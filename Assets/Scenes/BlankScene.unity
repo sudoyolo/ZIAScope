@@ -785,6 +785,7 @@ MonoBehaviour:
   selection: {fileID: 635361592}
   manipulation: {fileID: 1935460897}
   playerpos: {fileID: 1047941347}
+  whisper: {fileID: 1367442264}
 --- !u!4 &299702048
 Transform:
   m_ObjectHideFlags: 0
@@ -1185,7 +1186,7 @@ MonoBehaviour:
   pathManager: {fileID: 1358219825}
   user: {fileID: 1047941347}
   xrOrigin: {fileID: 702134313}
-  scrollingList: {fileID: 0}
+  scrollingList: {fileID: 446527566}
 --- !u!4 &463307261
 Transform:
   m_ObjectHideFlags: 0

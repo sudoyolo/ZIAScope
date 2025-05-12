@@ -79,7 +79,7 @@ namespace Samples.Whisper
 #if !UNITY_WEBGL
             //int index = PlayerPrefs.GetInt("user-mic-device-index");
             int index = 0;
-            if(globalVariables!=null && globalVariables.microphoneIdx!=null) {
+            if(globalVariables!=null) {
                 index = globalVariables.microphoneIdx-1;
                 Debug.Log("global variable idx is " + index);
             }

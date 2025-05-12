@@ -19,7 +19,7 @@ namespace Samples.Whisper
         private AudioClip clip;
         private bool isRecording;
         private float time;
-        private OpenAIApi openai = new OpenAIApi("api-key");
+        private OpenAIApi openai = new OpenAIApi("api key");
         private bool requestInProgress;
         private PlayerInputActions inputActions;
         private void Start()
@@ -74,8 +74,11 @@ namespace Samples.Whisper
         {
             isRecording = true;
 
-            //int index = PlayerPrefs.GetInt("user-mic-device-index");
-            int index = 2;
+            int index=1;
+            if(globalvariables!=null) {
+                index = globalvariables.microphoneIdx;
+                Debug.Log("global variable idx is " + index);
+            }
             #if !UNITY_WEBGL
             clip = Microphone.Start(dropdown.options[index].text, false, duration, 44100);
             #endif

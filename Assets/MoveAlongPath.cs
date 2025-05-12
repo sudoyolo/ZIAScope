@@ -88,13 +88,13 @@ public class MoveAlongPath : LocomotionProvider
                 locomotionEnabled = TryPrepareLocomotion();
                 if (!locomotionEnabled) return;
             }
-            Vector2 joystickInput = inputActions.Gameplay.moveFasterMoveAlongPath.ReadValue<Vector2>();
-            moveDistance += joystickInput.y *0.01f;
+            //Vector2 joystickInput = inputActions.Gameplay.moveFasterMoveAlongPath.ReadValue<Vector2>();
+            //moveDistance += joystickInput.y *0.01f;
             timer += Time.deltaTime;
             if (timer >= timeInterval && path!=null && currentCornerIndex < path.corners.Length)
             {
                 timer = 0f;
-                Vector3 mainCameraOffset = transform.InverseTransformPoint(mainCamera.transform.position);
+                /*Vector3 mainCameraOffset = transform.InverseTransformPoint(mainCamera.transform.position);
                 Vector3 targetCorner = new Vector3(path.corners[currentCornerIndex].x, mainCamera.transform.position.y,path.corners[currentCornerIndex].z);
                 Vector3 xrOriginDestination = (targetCorner - mainCameraOffset);
                 Vector3 vecToTarget = xrOriginDestination - transform.position;
@@ -113,7 +113,23 @@ public class MoveAlongPath : LocomotionProvider
                     //rotation logic
                     //Quaternion lookRotation = Quaternion.LookRotation(vecToCorner);
                     //transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 0.25f);
+                }*/
+                
+                Vector3 currHeadPosition = mainCamera.transform.position;
+                Vector3 targetCorner = new Vector3(path.corners[currentCornerIndex].x, mainCamera.transform.position.y,path.corners[currentCornerIndex].z);
+                Vector3 direction = targetCorner - currHeadPosition;
+                
+                if (direction.magnitude < moveDistance)
+                {
+                    transform.position += direction;
+                    currentCornerIndex += 1;
                 }
+                else
+                {
+                    transform.position +=direction.normalized* moveDistance;
+                }
+
+
                 if (currentCornerIndex == path.corners.Length /*|| (currentCornerIndex == path.corners.Length-1 && Vector3.Distance(transform.position,xrOriginDestination)<1)*/ )
                 {
                     //reached destination 
@@ -127,5 +143,8 @@ public class MoveAlongPath : LocomotionProvider
     }
     
 }
+
+
+
 
 
