@@ -14,7 +14,7 @@ namespace Samples.Whisper
         [SerializeField] private AIManager aiManager;
         private GlobalVariables globalVariables;
         public ScrollingStringList scrollingList;
-
+        public GameObject spinner;
         private readonly string fileName = "output.wav";
         private readonly int duration = 10;
 
@@ -56,6 +56,7 @@ namespace Samples.Whisper
         {
             requestInProgress = false;
             errorHandling = 0f;
+            spinner.SetActive(false);
         }
 
         private void ToggleRecording(InputAction.CallbackContext context)
@@ -114,6 +115,7 @@ namespace Samples.Whisper
             Microphone.End(null);
 #endif
             requestInProgress = true;
+            spinner.SetActive(true);
             byte[] data = SaveWav.Save(fileName, clip);
 
             var req = new CreateAudioTranscriptionsRequest
@@ -150,14 +152,12 @@ namespace Samples.Whisper
                 progressBar.color = color;
                 //progressBar.fillAmount = 0;
             }
-
             if (requestInProgress && !isRecording)
             {
                 errorHandling += Time.deltaTime;
                 if (errorHandling > errorDuration)
                 {
-                    requestInProgress = false;
-                    errorHandling = 0f;
+                    requestCompleted();
                 }
             }
 

@@ -13,6 +13,7 @@ namespace Samples.Whisper
         [SerializeField] private Dropdown dropdown;
         [SerializeField] private AIManagerHome aiManagerHome;
         public GlobalVariables globalvariables;
+        public GameObject spinner;
         private readonly string fileName = "output.wav";
         private readonly int duration = 10;
         
@@ -102,6 +103,7 @@ namespace Samples.Whisper
                 Language = "en"
             };
             requestInProgress = true;
+            spinner.SetActive(true);
             var res = await openai.CreateAudioTranscription(req);
             Debug.Log(res.Text);
             Color color = progressBar.color;
@@ -112,6 +114,7 @@ namespace Samples.Whisper
         }
         public void requestCompleted()
         {
+            spinner.SetActive(false);
             requestInProgress = false;
         }
         private void Update()
