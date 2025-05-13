@@ -17,7 +17,6 @@ namespace Samples.Whisper
         public GameObject spinner;
         private readonly string fileName = "output.wav";
         private readonly int duration = 10;
-
         private AudioClip clip;
         private bool isRecording;
         private float time;
@@ -27,6 +26,7 @@ namespace Samples.Whisper
         private bool requestInProgress;
         private float errorHandling;
         private float errorDuration;
+
         private void Start()
         {
             isRecording = false;

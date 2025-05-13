@@ -42,7 +42,7 @@ public class UndoRedoManager : MonoBehaviour
         }
 
         ClearRedoStack();
-        Debug.Log("logged state");
+        //Debug.Log("logged state");
     }
 
 

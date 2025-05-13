@@ -9,6 +9,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 
+// Computer Vision API call, sends an image to API alongside text prompt
+
 public class ComputerVision : MonoBehaviour
 {
     /*
@@ -26,7 +28,7 @@ public class ComputerVision : MonoBehaviour
 
     [Header("API Settings")]
     private string replicateUrl = "https://api.replicate.com/v1/predictions";
-    private string replicateToken = "empty"; // GET RID BEFORE PUSH ELSE DIE
+    private string replicateToken = ""; // GET RID BEFORE PUSH ELSE DIE
     private string llavaModelVersion = "80537f9eead1a5bfa72d5ac6ea6414379be41d4d4f6679fd776e9535d1eb58bb"; // LLaVA 13B
 
     void Start()
@@ -54,7 +56,8 @@ public class ComputerVision : MonoBehaviour
         string prompt = "";
         prompt += "The user is designing a scene in a virtual environment, and wants some feedback about this screen capture of their scene. In 25 words or less, provide them an answer to this question: ";
         prompt += text;
-        prompt += "\nAlso offer critiques or improvements, and point out any flaws. Focus on color/lighting/placement changes. Try not to suggest adding new things that do not already exist in the scene. Do not describe what is obviously in the scene.";
+        prompt += "\nAlso offer critiques or improvements, and point out any flaws. Focus on color/lighting/placement changes, such as moving a group of objects backwards, or adding duplicates of existing objects.";
+        prompt += "Try not to suggest adding new things that do not already exist. Do not describe what is obviously in the scene.";
         StartCoroutine(SendImageWithPromptToReplicate(prompt));
     }
 
@@ -90,7 +93,6 @@ public class ComputerVision : MonoBehaviour
             }
         };
 
-        // string jsonString = JsonUtility.ToJson(new Wrapper<object> { value = requestJson });
 
         UnityWebRequest request = new UnityWebRequest(replicateUrl, "POST");
         // byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonString.Replace("\"value\":", "").TrimStart('{').TrimEnd('}'));
@@ -138,7 +140,6 @@ public class ComputerVision : MonoBehaviour
             if (resultJson.Contains("\"status\":\"succeeded\""))
             {
                 string output = ExtractOutputFromJson(resultJson);
-                // OUTPUT HERE
                 scrollingList.AddString(output, "lightblue");
                 //responseText.text = output;
                 yield break;
@@ -153,7 +154,6 @@ public class ComputerVision : MonoBehaviour
         }
     }
 
-    // Helper class to wrap anonymous objects for JsonUtility
     [Serializable]
     private class Wrapper<T>
     {
@@ -168,7 +168,7 @@ public class ComputerVision : MonoBehaviour
         return json.Substring(start, end - start).Replace("\\/", "/");
     }
 
-    // Extract final output
+    // final output
     string ExtractOutputFromJson(string json)
     {
         try

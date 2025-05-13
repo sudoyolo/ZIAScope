@@ -2776,7 +2776,7 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.05
+  m_VoxelSize: 0.59999996
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: b88b77270c9a6466f8a85f0e98ad11f9, type: 2}
   m_BuildHeightMesh: 0
@@ -5001,7 +5001,7 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
-  m_Height: 2.5
+  m_Height: 3
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1566720517
@@ -5124,7 +5124,6 @@ MonoBehaviour:
   undoredo: {fileID: 435816749}
   aiManager: {fileID: 1913996668}
   lightingManager: {fileID: 1017642494}
-  sceneManager: {fileID: 0}
   computerVision: {fileID: 921042941}
 --- !u!4 &1590672276
 Transform:

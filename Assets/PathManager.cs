@@ -19,9 +19,7 @@ public class PathManager : MonoBehaviour
         objectPaths = new Dictionary<Tuple<int, int>, GameObject>();
     }
     
-    /// <summary>
-    /// Draws a new path using a LineRenderer.
-    /// </summary>
+    /// draws a new path using a LineRenderer
     /// <param name="points">The positions to connect in the path.</param>
     public void DrawPath(Transform start, Transform end, int idx1, int idx2)
     {
@@ -51,9 +49,7 @@ public class PathManager : MonoBehaviour
         return objectPaths[Tuple.Create(id1, id2)];
     }
 
-    /// <summary>
-    /// Clears all existing paths.
-    /// </summary>
+    // Clears all existing paths
     public void ClearPaths()
     {
         foreach (var obj in pathObjects)
@@ -64,9 +60,7 @@ public class PathManager : MonoBehaviour
         pathCount = 0;
         objectPaths.Clear();
     }
-    /// <summary>
-    /// Clears a single path.
-    /// </summary>
+    //Clears a single path
     public void ClearSinglePath(int idx1, int idx2)
     {
         if (!objectPaths.ContainsKey(Tuple.Create(idx1, idx2)) &&

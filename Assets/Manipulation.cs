@@ -22,6 +22,7 @@ public class Manipulation : MonoBehaviour
     //public SceneLoader sceneManager;
     public ComputerVision computerVision;
     private int lastCreatedIdx = -1;
+    private int numCreated = 0;
     
 
     // Start is called before the first frame update
@@ -158,6 +159,7 @@ public class Manipulation : MonoBehaviour
                 {
                     Debug.LogWarning("No previous selection exists, only manipulation applied.");
                 }
+                if(funcIndex!=14){numCreated = 0;}
                 functionList[funcIndex].Invoke(arg);
             }
             else
@@ -190,7 +192,7 @@ public class Manipulation : MonoBehaviour
         
         foreach (GameObject obj in selection.selectedObjects)
         {
-            obj.transform.localPosition = new Vector3(x, y+1.0f, z);
+            obj.transform.position = new Vector3(x, y+1.0f, z);
         }
 
     }
@@ -423,10 +425,12 @@ public class Manipulation : MonoBehaviour
         );
 
         if(lastCreatedIdx==index){
-            Vector3 euler = instance.transform.eulerAngles;
-            euler.y -= 90f;  // or euler.y += 270f for same effect
-            instance.transform.eulerAngles = euler;
-        }
+            numCreated ++;
+            //Vector3 euler = instance.transform.eulerAngles;
+            //euler.y -= 90f*numCreated;  // or euler.y += 270f for same effect
+            //instance.transform.eulerAngles = euler;
+            instance.transform.position += new Vector3(0.25f * numCreated, 0, 0.25f*numCreated);
+        }else{numCreated = 0;}
         lastCreatedIdx = index;
 
         instance.name = prefab.name + "_Clone";
